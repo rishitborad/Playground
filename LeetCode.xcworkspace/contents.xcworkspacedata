@@ -2,9 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:practice1/practice1.xcodeproj">
-   </FileRef>
-   <FileRef
       location = "container:CPP_Workspace.xcodeproj">
    </FileRef>
 </Workspace>
