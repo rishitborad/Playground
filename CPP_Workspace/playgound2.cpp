@@ -12,7 +12,9 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <unordered_set>
 #include <map>
+#include <queue>
 
 using namespace std;
 
@@ -354,9 +356,216 @@ std::string findRestaurant(vector<string>& list1, vector<string>& list2)
 }
 
 //======================================================================//
+// Better solution is
+//First find where the index of the last occcurrence of each letter is, store in array
+//Start scanning with the first letter of the string, find where the last occurrence of that letter is, that is the end of the current window / partition
+//For all letters in the current window, check if their last occurrence is beyond the current last occurrence, if so then there is an overlap between these windows and the window must expand to encompass all overlapping characters
+//Once the end of the window is reached, all letters within the window have last occurrences less than or equal to this end of window, then the partition is complete, move to the next partition
+bool isLastChar(string S, char c, int idx)
+{
+    for(int i = idx + 1; i < S.size(); i++)
+    {
+        if(S[i] == c)
+            return false;
+    }
+    return true;
+}
 
-//int main()
-//{
+bool last_of_the_group(unordered_set<char>group, char c, int idx, string s)
+{
+    unordered_set<char>::iterator itr;
+    
+    for(itr = group.begin(); itr != group.end(); itr++)
+    {
+        //printf("group: %c, char:%c, idx:%d\r\n", *itr, c, idx);
+        if(!isLastChar(s, *itr, idx))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
+vector<int> partitionLabels(string S)
+{
+    vector<int> ans;
+    unordered_set<char> char_seen;
+    
+    int last_familiar_char = 0;
+    int start_idx = 0;
+    int i = 0;
+    
+    while(start_idx < S.size())
+    {
+        if(char_seen.find(S[i]) != char_seen.end())
+            last_familiar_char = i;
+        else
+            char_seen.insert(S[i]);
+        
+        if(isLastChar(S, S[i], i))
+        {
+            if(last_of_the_group(char_seen, S[i], i, S))
+            {
+                //printf("%c at %d is last of the group\r\n", S[i], i);
+                ans.push_back((last_familiar_char - start_idx)+1);
+                start_idx = last_familiar_char + 1;
+                last_familiar_char = start_idx;
+                char_seen.clear();
+            }
+        }
+    
+        i++;
+    }
+    return ans;
+}
+
+//======================================================================//
+
+
+
+class Order
+{
+private:
+    string id;
+    vector<string> metadata;
+public:
+    Order(string raw_order)
+    {
+        string space = " ";
+        int foundat = (int)raw_order.find(space);
+        id = raw_order.substr(0, foundat);
+        //printf("%s\r\n%s\r\n", id.c_str(),raw_order.c_str());
+        int start = foundat+1;
+        while(foundat != string::npos)
+        {
+            //printf("s%d",start);
+            foundat = (int)raw_order.find(" ", foundat+1);
+            string sub = raw_order.substr(start, (foundat-start));
+            //printf("e%d %s\r\n",foundat, sub.c_str());
+            metadata.push_back(sub);
+            start = foundat+1;
+        }
+    }
+   vector<string> getMetadata()
+    {
+        return metadata;
+    }
+    string getId()
+    {
+        return id;
+    }
+};
+
+static int LexicalOrder(string s1, string s2)
+{
+    int len = (int)((s1.size() < s2.size()) ? s1.size() : s2.size());
+    
+    for(int i = 0; i < len; i++)
+    {
+        if(s1[i] < s2[i])
+        {
+            return 1;
+        }
+        else if(s1[i] < s2[i])
+        {
+            return -1;
+        }
+        
+    }
+    return 0;
+}
+
+class CustomCompare
+{
+public:
+    int operator() (Order o1, Order o2)
+    {
+        vector<string> o1Meta = o1.getMetadata();
+        vector<string> o2Meta = o2.getMetadata();
+        
+        int minlen = (int)((o1Meta.size() < o2Meta.size()) ? o1Meta.size() : o2Meta.size());
+        
+        for(int i = 0; i < minlen; i++)
+        {
+            int lexorder = LexicalOrder(o1Meta[i], o2Meta[i]) != 0;
+            if(lexorder != 0)
+            {
+                return lexorder;
+            }
+        }
+        
+        return LexicalOrder(o1.getId(), o2.getId());
+    }
+};
+
+vector<string> amazon_order_sorting(vector<string>orderlist)
+{
+    vector<Order>object_list;
+    priority_queue<Order, vector<Order>, CustomCompare> pq;
+    vector<string> answer;
+    
+    for(int i = 0; i < orderlist.size(); i++)
+    {
+        Order* order = new Order(orderlist[i]);
+        object_list.push_back(*order);
+    }
+#if 0
+    for(int i = 0; i < object_list.size(); i++)
+    {
+        printf("id: [%s]\t", object_list[i].getId().c_str());
+        vector<string> meta = object_list[i].getMetadata();
+        for(int j = 0; j < meta.size(); j++)
+        {
+            printf("[%s]\t",meta[j].c_str());
+        }
+        printf("\r\n");
+    }
+#endif
+    for(int i = 0 ; i < object_list.size(); i++)
+    {
+        pq.push(orderlist[i]);
+    }
+    while (!pq.empty())
+    {
+        Order temp = pq.top();
+        pq.pop();
+        string reconstruct  = temp.getId();
+        vector<string> meta = temp.getMetadata();
+        for(int i = 0 ; i < meta.size(); i++)
+        {
+            reconstruct = reconstruct + " " + meta[i];
+        }
+        answer.push_back(reconstruct);
+    }
+    
+    return answer;
+}
+
+//
+
+int main()
+{
+    vector<string>orderList = {"zld 93 12"
+        ,"fp kindle book"
+        ,"10a echo show"
+        ,"17g 12 25 6"
+        ,"abl kindle book"
+        ,"125 echo dot second generation"
+    };
+    
+    vector<string> ans = amazon_order_sorting(orderList);
+    
+    for(int i = 0; i < ans.size(); i++)
+    {
+        printf("%s\r\n", ans[i].c_str());
+    }
+    
+    
+    //string S = "ababcbacamdefegdehijhklij";
+    
+    //vector<int> sub = partitionLabels(S);
+    //print_1D_vector_int(sub);
+    
     //vector<string> list1 = {"Sparta","Roman", "Greek", "Persian", "Arabic", "Indian"};
     //vector<string> list2 = {"English", "Hindi", "Sparta", "Roman", "Chinese", "Mexicans"};
     //printf("%s\r\n", findRestaurant(list1, list2).c_str());
@@ -409,7 +618,7 @@ std::string findRestaurant(vector<string>& list1, vector<string>& list2)
     //cout << "ans" << ans << endl;
     
     //return 0;
-//}
+}
 
 /*
  
