@@ -13,6 +13,7 @@
 #include <vector>
 #include <set>
 #include <unordered_set>
+#include <unordered_map>
 #include <map>
 #include <queue>
 
@@ -541,10 +542,174 @@ vector<string> amazon_order_sorting(vector<string>orderlist)
     return answer;
 }
 
-//
+//======================================================================//
+
+class Logger
+{
+public:
+    
+    unordered_map<string, int> record;
+    
+    Logger()
+    {
+    }
+    
+    bool shouldPrintMessage(int timestamp, string message)
+    {
+        unordered_map<string, int>:: iterator itr = record.find(message);
+     
+        if(itr != record.end())
+        {
+            if(itr->second <= timestamp - 10)
+            {
+                itr->second = timestamp;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        
+        record.emplace(message, timestamp);
+        
+        return true;
+    }
+};
+
+typedef pair<char, int> PAIR;
+
+//char get_max_freq
+
+vector<int> compare_by_freq_of_smallest_char(vector<string>& queries, vector<string>& words)
+{
+    vector<int> answer;
+    vector<int> words_min_char_freq(words.size(),0);
+    
+    map<char, int> words_char_freq[words.size()];
+    map<char, int> query_char_freq;
+    
+    for(int i = 0; i < words.size(); i++)
+    {
+        for(int j = 0; j < words[i].size(); j++)
+        {
+            char c = words[i][j];
+            
+            // Add if not already present in map
+            if(words_char_freq[i].find(c) == words_char_freq[i].end())
+            {
+                words_char_freq[i].emplace(c, 1);
+            }
+            else    // Increment if already present in map
+            {
+                words_char_freq[i][c]++;
+            }
+        }
+        words_min_char_freq[i] = words_char_freq[i].begin()->second;
+    }
+    
+    int freq = 0;
+    
+    for(int i = 0; i < queries.size(); i++)
+    {
+        int query_greater_count = 0;
+        query_char_freq.clear();
+        
+        for(int j = 0; j < queries[i].size(); j++)
+        {
+            char c = queries[i][j];
+            
+                    // Add if not already present in map
+            if(query_char_freq.find(c) == query_char_freq.end())
+                query_char_freq.emplace(c, 1);
+            else    // Increment if already present in map
+                query_char_freq[c]++;
+        }
+        
+        freq = query_char_freq.begin()->second;
+        for(int k = 0; k < words.size(); k++)
+        {
+            if(freq > words_min_char_freq[k])
+                query_greater_count++;
+        }
+        answer.push_back(query_greater_count);
+    }
+    
+    /*
+    for(int i = 0; i< words.size(); i++)
+    {
+        for(auto itr = words_char_freq[i].begin(); itr != words_char_freq[i].end(); itr++)
+        {
+            printf("Key : %c, value %d\r\n", itr->first, itr->second);
+        }
+        printf("\r\n");
+    }
+    */
+    return answer;
+}
 
 int main()
 {
+    
+    vector<string>querries {"sparta", "spartaaa", "leemon"};
+    vector<string>words {"aaaabbcs", "abcsrsaa", "bbcjdhs"};
+    
+    vector<int> ans = compare_by_freq_of_smallest_char(querries, words);
+    print_1D_vector_int(ans);
+    //compare_by_freq_of_smallest_char(querries, words);
+    
+/*
+    Logger logger;
+    
+    if(logger.shouldPrintMessage(1, "Foo"))
+    {
+        printf("1 Foo true\r\n");
+    }
+    else{
+        printf("1 foo false\r\n");
+    }
+    
+    if(logger.shouldPrintMessage(2, "Bar"))
+    {
+        printf("2 Bar true\r\n");
+    }
+    else{
+        printf("2 Bar false\r\n");
+    }
+    
+    if(logger.shouldPrintMessage(3, "Foo"))
+    {
+        printf("3 Foo true\r\n");
+    }
+    else{
+        printf("3 foo false\r\n");
+    }
+    
+    if(logger.shouldPrintMessage(8, "Bar"))
+    {
+        printf("8 Bar true\r\n");
+    }
+    else{
+        printf("8 Bar false\r\n");
+    }
+    if(logger.shouldPrintMessage(10, "Foo"))
+    {
+        printf("10 Foo true\r\n");
+    }
+    else{
+        printf("10 foo false\r\n");
+    }
+    if(logger.shouldPrintMessage(11, "Foo"))
+    {
+        printf("11 Foo true\r\n");
+    }
+    else{
+        printf("11 foo false\r\n");
+    }
+    
+*/
+    
+/*
     vector<string>orderList = {"zld 93 12"
         ,"fp kindle book"
         ,"10a echo show"
@@ -559,7 +724,7 @@ int main()
     {
         printf("%s\r\n", ans[i].c_str());
     }
-    
+*/
     
     //string S = "ababcbacamdefegdehijhklij";
     
