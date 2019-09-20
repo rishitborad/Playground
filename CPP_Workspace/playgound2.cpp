@@ -75,6 +75,19 @@ void print_1D_vector_int(vector<int>& vec)
     cout << endl;
 }
 
+void print_2D_vector_int(vector<vector<int>>& vec)
+{
+    for(int i = 0; i < vec.size(); i++)
+    {
+        for(int j = 0; j < vec[i].size(); j++)
+        {
+            printf("%d ",vec[i][j]);
+        }
+        printf("\r\n");
+    }
+    cout << endl;
+}
+
 //======================================================================//
 // LeedCode Questions //
 //======================================================================//
@@ -577,9 +590,7 @@ public:
     }
 };
 
-typedef pair<char, int> PAIR;
-
-//char get_max_freq
+//======================================================================//
 
 vector<int> compare_by_freq_of_smallest_char(vector<string>& queries, vector<string>& words)
 {
@@ -648,15 +659,131 @@ vector<int> compare_by_freq_of_smallest_char(vector<string>& queries, vector<str
     return answer;
 }
 
+//======================================================================//
+// Needs to resolve one bug to make it work
+vector<int> print_tree_levels(TREE_NODE_p head)
+{
+    queue<TREE_NODE_p>q;
+    vector<int>tree_arr;
+    
+    if(!head)
+        return tree_arr;
+    
+    q.push(head);
+    
+    while(!q.empty())
+    {
+        TREE_NODE_p node = q.front();
+        tree_arr.push_back(node->val);
+        q.pop();
+        
+        if(node->left != NULL)
+            q.push(node->left);
+        if(node->right != NULL)
+            q.push(node->right);
+    }
+    
+    return tree_arr;
+}
+
+typedef struct node_children
+{
+    TREE_NODE_p left;
+    TREE_NODE_p right;
+    
+} NODE_CHILDREN_t;
+
+void delNodes_util(TREE_NODE_p* head, vector<NODE_CHILDREN_t>& children, set<int>&to_del_set)
+{
+    NODE_CHILDREN_t child;
+    
+    if(!head)
+        return;
+    printf("head val = %d\r\n", (*head)->val);
+    
+    if(!(*head))
+        return;
+    
+    auto itr = to_del_set.find((*head)->val);
+    
+    if(itr != to_del_set.end())
+    {
+        printf("Delete %d\r\n",*itr);
+        child.left = (*head)->left;
+        child.right = (*head)->right;
+        free(*head);
+        
+        if((*head)->left || (*head)->right)
+            children.push_back(child);
+        
+        if(child.left != nullptr)
+            printf("child %d\r\n", child.left->val);
+        if(child.right != nullptr)
+            printf("child %d\r\n", child.right->val);
+    }
+    
+    if((*head)->left != nullptr)
+        delNodes_util(&(*head)->left, children, to_del_set);
+    if((*head)->right != nullptr)
+        delNodes_util(&(*head)->right, children, to_del_set);
+
+    return;
+}
+
+vector<vector<int>> delNodes(TREE_NODE_p root, vector<int>& to_delete)
+{
+    vector<vector<int>> ans;
+    vector<NODE_CHILDREN_t>children;
+    
+    printf("val = %d\r\n", root->val);
+    
+    set<int> set_to_del(to_delete.begin(),to_delete.end());
+    
+    delNodes_util(&root, children, set_to_del);
+    
+    for(int i = 0; i < children.size(); i++)
+    {
+        if(children[i].left)
+            printf("size %lu, %d\r\n", children.size(), children[i].left->val);
+        
+// TODO: An Error here, otherwise perfectly working code
+        //ans.push_back(print_tree_levels(root));
+        ans.push_back(print_tree_levels(children[i].left));
+        ans.push_back(print_tree_levels(children[i].right));
+    }
+    
+    return ans;
+}
+
+//======================================================================//
+
 int main()
 {
+
+
     
+/*
+    TREE_NODE_p head = create_tree_node(1);
+    head->left = create_tree_node(2);
+    head->right = create_tree_node(3);
+    head->left->left = create_tree_node(4);
+    head->left->right = create_tree_node(5);
+    head->right->left = create_tree_node(6);
+    head->right->right = create_tree_node(7);
+    
+    vector<int> tree = print_tree_levels(head);
+    print_1D_vector_int(tree);
+    vector<int>to_delete{3,5};
+    vector<vector<int>>ans = delNodes(head, to_delete);
+    print_2D_vector_int(ans);
+*/
+/*
     vector<string>querries {"sparta", "spartaaa", "leemon"};
     vector<string>words {"aaaabbcs", "abcsrsaa", "bbcjdhs"};
     
     vector<int> ans = compare_by_freq_of_smallest_char(querries, words);
     print_1D_vector_int(ans);
-    //compare_by_freq_of_smallest_char(querries, words);
+*/
     
 /*
     Logger logger;
