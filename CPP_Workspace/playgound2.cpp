@@ -756,11 +756,63 @@ vector<vector<int>> delNodes(TREE_NODE_p root, vector<int>& to_delete)
 }
 
 //======================================================================//
+// 1055. Shortest way to form a string
+
+int shortestWay(string source, string target)
+{
+    
+    int substring_count = 0;
+    unordered_set<char> source_chars;
+    unordered_set<char> target_chars;
+    
+    if(source.compare(target) == 0)
+    {
+        return 1;
+    }
+    
+    for(int i = 0; i < source.size(); i++)
+    {
+        source_chars.emplace(source[i]);
+    }
+    
+    for(int i = 0; i < target.size(); i++)
+    {
+        // Check if all the letters in target are present in source
+        if(source_chars.find(target[i]) == source_chars.end())
+            return -1;
+        else
+            target_chars.emplace(target[i]);
+    }
+
+    int start = 0;
+    
+    int i = 0;
+    while(i < target.size())
+    {
+        start = i;
+        int j = 0;
+        
+        while(j < source.size() && i < target.size())
+        {
+            if(source[j] == target[i])
+                i++;
+            j++;
+        }
+        substring_count++;
+    }
+    
+    return substring_count;
+}
+
+//======================================================================//
 
 int main()
 {
 
-
+    string soruce = "abc";
+    string target = "acbac";
+    
+    printf("Shortest way %d\r\n", shortestWay(soruce, target));
     
 /*
     TREE_NODE_p head = create_tree_node(1);
