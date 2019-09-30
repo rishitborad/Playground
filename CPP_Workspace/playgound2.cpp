@@ -805,15 +805,139 @@ int shortestWay(string source, string target)
 }
 
 //======================================================================//
+//1057. Campus Bikes
+
+int distance(pair<int,int> a, pair<int,int> b)
+{
+    return abs(a.first-b.first)+abs(a.second-b.second);
+}
+
+vector<int> assignBikes(vector<vector<int>>& workers, vector<vector<int>>& bikes)
+{
+    vector<int> answer(workers.size());
+    
+    map<int,int> distance_map[workers.size()];
+    
+    for(int i = 0; i < workers.size(); i++)
+    {
+        for(int j = 0 ; j < bikes.size(); j++)
+        {
+            int dist = distance( make_pair(workers[i][0], workers[i][1]), make_pair(bikes[j][0], bikes[j][1]) );
+            distance_map[i].insert({j,dist});
+            printf("%d %d\r\n",j , dist);
+        }
+        printf("\r\n");
+    }
+    
+    int min_distance = INT_MAX;
+    int min_worker = 0;
+
+    // Handle situatilns where another worker is already using the bike
+    // Remove already used bikes from the table
+    for(int i = 0; i < bikes.size(); i++)
+    {
+        for(int j = 0; j < workers.size(); j++)
+        {
+            auto itr = distance_map[j].find(i);
+            if(itr->second < min_distance)
+            {
+                min_distance = itr->second;
+                min_worker = j;
+            }
+        }
+        answer[min_worker] = i;
+    }
+    
+    return answer;
+}
+
+//======================================================================//
+
+// Add and Search Word - Data structure design
+
+struct TrieNode
+{
+    bool isWord;
+    TrieNode* children[26];
+    char c;
+    
+    TrieNode()
+    {
+        isWord = false;
+        memset(children, NULL, sizeof(children));
+    }
+};
+
+class Dictionary
+{
+private:
+    TrieNode* root;
+    
+    bool search_word(string word, TrieNode* base_node)
+    {
+        TrieNode* curr = base_node;
+        
+        for(int i = 0; i < word.size() && curr; i++)
+        {
+            if(word[i] != '.')
+            {
+                curr = curr->children[word[i] - 'a'];
+            }
+            else
+            {
+                for(int j = 0 ; j < 26; j++)
+                {
+                    search_word(word.substr(i+1,word.size()-(i+1)), curr->children[j]);
+                }
+            }
+        }
+        return curr && curr->isWord;
+    }
+    
+public:
+    Dictionary()
+    {
+        root = new TrieNode();
+    }
+    
+    void insert_word(string word)
+    {
+        TrieNode *curr =  root;
+        
+        for(int i = 0 ; i < word.size(); i++)
+        {
+            if(!curr->children[word[i] - 'a'])
+            {
+                curr->children[word[i]-'a'] = new TrieNode();
+            }
+            
+            curr = curr->children[word[i]-'a'];
+        }
+        curr->isWord = true;
+    }
+    
+    bool search_word(string word)
+    {
+        return search_word(word, root);
+    }
+};
+
+//======================================================================//
 
 int main()
 {
 
+    vector<vector<int>>workers{{1,1},{3,1},{0,3}};
+    vector<vector<int>>bikes{{2,2},{4,4},{2,4}};
+    
+    vector<int>ans = assignBikes(workers, bikes);
+    print_1D_vector_int(ans);
+    /*
     string soruce = "abc";
     string target = "acbac";
     
     printf("Shortest way %d\r\n", shortestWay(soruce, target));
-    
+    */
 /*
     TREE_NODE_p head = create_tree_node(1);
     head->left = create_tree_node(2);
