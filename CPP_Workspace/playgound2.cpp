@@ -23,6 +23,8 @@ using namespace std;
 // Utility Functions //
 //======================================================================//
 
+#define MAX(A,B) (A > B ? A : B)
+
 typedef struct treenode;
 
 typedef struct treenode
@@ -923,15 +925,55 @@ public:
 };
 
 //======================================================================//
+// Input: [3,6,9,12]
+// Output: 4
+// Explanation: The whole array is an arithmetic sequence with steps of length = 3.
+int longestArithmeticSubsequence(vector<int>&A)
+{
+    int max = 0;
+    unordered_map<int, int> mp;
+    
+    for(int i = 0 ; i < A.size()-1; i++)
+    {
+        for(int j = i+1; j < A.size(); j++)
+        {
+            int diff = A[j]-A[i];
+            auto itr = mp.find(diff);
+            
+            if(itr != mp.end()) // diff is in map
+            {
+                itr->second++;
+                max = MAX(max, itr->second);
+                printf("diff: %d, mx: %d\r\n",itr->first,max);
+            }
+            else
+            {
+                mp.insert({diff,1});
+            }
+        }
+    }
+    for(int i = 0; i < mp.size(); i++)
+    {
+        printf("mp[%d]=%d\r\n",i,mp[i]);
+    }
+    
+    return max+1;
+}
+
+//======================================================================//
 
 int main()
 {
 
+    vector<int>vec{3,4,6,8,9,10,12,14,15};
+    printf("longest Arithmetic Subsequence %d\r\n", longestArithmeticSubsequence(vec));
+    /*
     vector<vector<int>>workers{{1,1},{3,1},{0,3}};
     vector<vector<int>>bikes{{2,2},{4,4},{2,4}};
     
     vector<int>ans = assignBikes(workers, bikes);
     print_1D_vector_int(ans);
+     */
     /*
     string soruce = "abc";
     string target = "acbac";
