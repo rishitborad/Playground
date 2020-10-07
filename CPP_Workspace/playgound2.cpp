@@ -961,6 +961,45 @@ int longestArithmeticSubsequence(vector<int>&A)
 }
 
 //======================================================================//
+//1480. Running Sum of 1d Array
+//vector<int>data = {1,1,1,1,1,1,1};
+//vector<int>sum;
+//runningSum(data, sum);
+
+void runningSum(vector<int>& data, vector<int>& running_sum)
+{
+  size_t i = 0;
+  int sum_sofar = 0;
+  while(i < data.size())
+  {
+    sum_sofar+= data[i];
+    running_sum.push_back(sum_sofar);
+    i++;
+  }
+}
+//======================================================================//
+//1304. Find N Unique Integers Sum up to Zero
+//print1Dvector(sumZero(2));
+vector<int> sumZero(int n)
+{
+  vector<int> vec;
+  if(n <= 0)
+    return vec;
+  
+  
+  if(n%2)
+  {
+    vec.push_back(0);
+  }
+  
+  for(int i = 1; i < (n/2) + 1; i++)
+  {
+    vec.push_back(i);
+    vec.push_back(-i);
+  }
+  return vec;
+}
+//======================================================================//
 
 int main()
 {

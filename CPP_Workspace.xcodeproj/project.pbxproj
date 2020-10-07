@@ -243,8 +243,9 @@
 		7CE9C58522617546007F7465 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Q55M3YDT7K;
+				DEVELOPMENT_TEAM = 24A87F99XX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -252,8 +253,9 @@
 		7CE9C58622617546007F7465 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Q55M3YDT7K;
+				DEVELOPMENT_TEAM = 24A87F99XX;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
