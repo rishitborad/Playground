@@ -1000,12 +1000,73 @@ vector<int> sumZero(int n)
   return vec;
 }
 //======================================================================//
+//346. Moving Average from Data Stream
+//Run:
+//    MovingAverage* m = new MovingAverage(3);
+//    printf("Moving avg: %lf\r\n",m->next(1));
+//    printf("Moving avg: %lf\r\n",m->next(10));
+//    printf("Moving avg: %lf\r\n",m->next(3));
+//    printf("Moving avg: %lf\r\n",m->next(5));
+class MovingAverage {
+private:
+    int window_size;
+    int start_idx;
+    int end_idx;
+    int sum;
+    int elements;
+    vector<int> array;
+public:
+    /** Initialize your data structure here. */
+    MovingAverage(int size)
+    : window_size(size)
+    , start_idx(0)
+    , end_idx(0)
+    , elements(0)
+    , sum(0)
+    {   //printf("capacity %d\r\n",array.capacity());
+        array.reserve(size);
+        //printf("capacity %d\r\n",array.capacity());
+    }
+    
+    double next(int val)
+    {
+        //Init
+        if(elements < window_size)
+        {
+            sum += val;
+            array[elements] = val;
+            elements++;
+            return (double)sum/elements;
+        }
+        else{// Normal case
+            //printf("sum %d, start %d", sum, start_idx);
+            sum = (sum - array[start_idx]) + val;
+            array[start_idx] = val;
+            
+            if((start_idx + 1) < window_size)
+                start_idx++;
+            else
+                start_idx = 0;
+            
+            return (double)sum/window_size;
+        }
+    }
+};
+
+//======================================================================//
 
 int main()
 {
-
+    MovingAverage* m = new MovingAverage(2);
+    printf("Moving avg: %lf\r\n",m->next(1));
+    printf("Moving avg: %lf\r\n",m->next(10));
+    printf("Moving avg: %lf\r\n",m->next(3));
+    printf("Moving avg: %lf\r\n",m->next(5));
+    
+    /*
     vector<int>vec{3,4,6,8,9,10,12,14,15};
     printf("longest Arithmetic Subsequence %d\r\n", longestArithmeticSubsequence(vec));
+     */
     /*
     vector<vector<int>>workers{{1,1},{3,1},{0,3}};
     vector<vector<int>>bikes{{2,2},{4,4},{2,4}};
