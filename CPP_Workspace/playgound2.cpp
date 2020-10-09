@@ -10,12 +10,14 @@
 // Gitlab - dhZtFVuj5xgJUJT1rkVW
 
 #include <iostream>
+#include <string>
 #include <vector>
 #include <set>
 #include <unordered_set>
 #include <unordered_map>
 #include <map>
 #include <queue>
+#include <list>
 
 using namespace std;
 
@@ -1054,14 +1056,241 @@ public:
 };
 
 //======================================================================//
+void reverse_string(char * str, int size)
+{
+    int s = 0;
+    int e = size-2;
+    
+    while(s<e)
+    {
+        char temp = str[e];
+        str[e--] = str[s];
+        str[s++] = temp;
+    }
+    str[size-1] = '\0';
+}
+
+//======================================================================//
+//1002. Find Common Characters
+//Run:
+//vector<string> strs;
+//
+//strs.push_back("cool");
+//strs.push_back("lock");
+//strs.push_back("coock");
+//commonChars(strs);
+
+void printMultiSetChar(multiset<char> chars)
+{
+    for(auto itr = chars.begin(); itr != chars.end(); itr++)
+    {
+        printf("%c ", *itr);
+    }
+    printf("\r\n");
+}
+
+unordered_map<char, int> commonChars_util(unordered_map<char, int>& dict, string str)
+{
+    unordered_map<char, int>newDict;
+    for(int i = 0; i < str.size(); i++)
+    {
+        auto itr = dict.find(str[i]);
+        if (itr!= dict.end() && itr->second != 0) {
+            itr->second--;
+            
+            auto newItr = newDict.find(itr->first);
+            
+            if(newItr != newDict.end())
+            {
+                newItr->second++;
+            }
+            else{
+                newDict.emplace(itr->first, 1);
+            }
+        }
+    }
+    return newDict;
+}
+
+void commonChars(vector<string>& A)
+{
+    unordered_map<char, int>common_pool;
+    
+    // Make a pool
+    for(int i = 0 ; i < A[0].size(); i++)
+    {
+        common_pool[A[0][i]]++;
+    }
+    for(auto itr = common_pool.begin(); itr != common_pool.end(); itr++)
+    {
+        printf("%c %d\r\n", itr->first, itr->second);
+    }
+    printf("\r\n");
+    for(int i = 0 ; i < A.size(); i++)
+    {
+        common_pool = commonChars_util(common_pool, A[i]);
+    }
+    
+    for(auto itr = common_pool.begin(); itr != common_pool.end(); itr++)
+    {
+        printf("%c ", itr->first);
+    }
+}
+
+
+//======================================================================//
+//937. Reorder Data in Log Files
+
+//vector<string> out_log;
+//RecordDataLogger l;
+//vector<string> log = {"dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"};
+//out_log = l.reorderLogFiles(log);
+//
+//for(int i = 0 ; i < out_log.size(); i++)
+//{
+//    printf("%s\r\n", out_log[i].c_str());
+//}
+
+struct comp{
+    template<typename T>
+    
+    bool operator()(const T& l, const T& r)
+    {
+        
+        if(l.second > r.second)
+        {
+            return false;
+        }
+        else if(l.second < r.second)
+        {
+            return  true;
+        }
+        else{
+            if(l.first > r.first)
+            {
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+    }
+};
+
+
+typedef struct idLog{
+    bool isNumeric;
+    string id;
+    string log;
+}Logger_t;
+
+void print_pairs(vector<pair<string, string>>& logs)
+{
+    for(int i = 0; i < logs.size(); i++)
+    {
+        printf("ID: %s, Log: %s\r\n", logs[i].first.c_str(), logs[i].second.c_str());
+    }
+}
+
+void print_logger(vector<Logger_t> log)
+{
+    for(int i =0; i < log.size(); i++)
+    {
+        printf("id: %s, log: %s, %d\r\n", log[i].id.c_str(), log[i].log.c_str(), (log[i].isNumeric==true) ? 1 : 0);
+    }
+}
+
+void print_set(set<pair<string,string>, comp>& st)
+{
+    for(auto itr = st.begin(); itr != st.end(); itr++)
+    {
+        cout << itr->first << itr->second << endl;
+    }
+}
+
+class RecordDataLogger {
+private:
+    vector<Logger_t> logs_new;
+    vector<pair<string,string>> numeric_log;
+    vector<pair<string,string>> alpha_log;
+    
+    void combine_log(vector<string>& numeric)
+    {
+        for(int i = 0; i < numeric_log.size(); i++)
+        {
+            numeric.push_back(numeric_log[i].first+ " " +numeric_log[i].second);
+        }
+    }
+    
+    void saperate_alpha_numeric_logs()
+    {
+        for(int i = 0; i < logs_new.size(); i++)
+        {
+            if(logs_new[i].isNumeric)
+            {
+                numeric_log.push_back({logs_new[i].id, logs_new[i].log});
+            }
+            else{
+                alpha_log.push_back({logs_new[i].id, logs_new[i].log});
+            }
+        }
+    }
+    
+    void clean_logs(vector<string>& logs)
+    {
+        Logger_t elem;
+        for(int i = 0; i < logs.size(); i++)
+        {
+            // Find first space;
+            size_t size = logs[i].size();
+            size_t idx = logs[i].find(" ");
+            if(idx == string::npos)
+            {
+                printf("no space");
+                elem.id = logs[i];
+            }
+            else{
+                elem.id = logs[i].substr(0, idx);
+                elem.log = logs[i].substr(idx+1, size - (idx+1));
+                elem.isNumeric = false;
+                if('0' <= elem.log[0] && elem.log[0] <= '9')
+                {
+                    elem.isNumeric = true;
+                }
+                logs_new.push_back(elem);
+            }
+        }
+    }
+public:
+        vector<string> reorderLogFiles(vector<string>& logs) {
+        vector<string> op_logger;
+        set<pair<string,string>, comp> st;
+        
+        clean_logs(logs);
+        saperate_alpha_numeric_logs();
+        
+        for(int i = 0; i < alpha_log.size(); i++)
+        {
+            st.insert(alpha_log[i]);
+        }
+        
+        for(auto itr = st.begin(); itr != st.end(); itr++)
+        {
+            op_logger.push_back(itr->first + " " + itr->second);
+        }
+        
+        combine_log(op_logger);
+        
+        return op_logger;
+    }
+};
+
+
+//======================================================================//
 
 int main()
 {
-    MovingAverage* m = new MovingAverage(2);
-    printf("Moving avg: %lf\r\n",m->next(1));
-    printf("Moving avg: %lf\r\n",m->next(10));
-    printf("Moving avg: %lf\r\n",m->next(3));
-    printf("Moving avg: %lf\r\n",m->next(5));
+    
     
     /*
     vector<int>vec{3,4,6,8,9,10,12,14,15};
