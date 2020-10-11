@@ -1141,6 +1141,39 @@ void commonChars(vector<string>& A)
 //======================================================================//
 //937. Reorder Data in Log Files
 
+/* *********************** Amazing solution found in Discussion forum of this question on leetcode here : https://leetcode.com/problems/reorder-data-in-log-files/discuss/460589/98-Modern-C%2B%2B-using-STL-8-lines-of-code-with-detailed-explanation *********************** */
+/*
+class Solution {
+public:
+    vector<string> reorderLogFiles(vector<string>& logs) {
+        // We can break this problem into two tasks: 1) Parition 2) Sort letter-logs
+
+        // Partition: letter-logs at the front, digit-logs at the back.
+        // We're using stable_partition instead of partition to retain the original order.
+        // stable_partition returns an iterator to the first element of the second group.
+        
+        auto it = stable_partition(logs.begin(), logs.end(), [](const string& str) {
+            return isalpha(str[str.find(' ') + 1]);
+        });
+
+        // Sort letter-logs: We're only iterating on letter-logs in this case.
+        // We're creating a substring for every element we compare that doesn't include the identifier
+        // If the logs are the same except the identifier, we compare the strings, otherwise, the substrings
+        
+        sort(logs.begin(), it, [](const string& str1, const string& str2) {
+            auto substr1 = string(str1.begin() + str1.find(' '), str1.end());
+            auto substr2 = string(str2.begin() + str2.find(' '), str2.end());
+            return (substr1 == substr2) ? str1 < str2 : substr1 < substr2;
+        });
+        
+        return logs;
+    }
+};
+*/
+
+
+/* *********************** My Solution *************************** */
+
 //vector<string> out_log;
 //RecordDataLogger l;
 //vector<string> log = {"dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"};
@@ -1288,9 +1321,60 @@ public:
 
 //======================================================================//
 
+//243. Shortest Word Distance
+
+//vector<string>words = {"practice", "makes", "perfect", "coding", "makes"};
+//printf("Shortest Dist = %d" , shortestDistance(words, "practice", "perfect"));
+//vector<string>words = {"a", "b", "c", "a", "a", "q","m","r","m","a","a","q","m"};
+//printf("Shortest Dist = %d" , shortestDistance(words, "a", "m"));
+
+
+/* Explination:
+    there are 3 possibilities to count the distance:
+ 1. if the current word and the word we started counting from (base word) are same - Distance resets
+ 2. if current word and the word we started counting from (base word) are different - Log distnce if minimum, update base word
+ 
+ Other things:
+    count up always
+    update base word when current word matches one of the lookup words.
+ */
+
+int shortestDistance(vector<string>& words, string word1, string word2)
+{
+    int cntr = 0;
+    int dist = INT_MAX;
+    string base_word = {};
+    
+    for(int i = 0 ; i < (int)words.size(); i++)
+    {
+        // Current word is one of the target words
+        if(words[i] == word1 || words[i] == word2)
+        {
+            // This is
+            if(base_word != words[i] && base_word != "")
+            {
+                dist = min(dist, cntr);
+            }
+            else{
+                cntr = 0;
+            }
+            base_word = words[i];
+        }
+        cntr++;
+    }
+    return dist;
+}
+
+//======================================================================//
+//1099. Two Sum Less Than K
+
+
+
+//======================================================================//
+
 int main()
 {
-    
+   
     
     /*
     vector<int>vec{3,4,6,8,9,10,12,14,15};
