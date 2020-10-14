@@ -18,7 +18,8 @@
 #include <map>
 #include <queue>
 #include <list>
-
+#include <thread>
+#include <mutex>
 using namespace std;
 
 //======================================================================//
@@ -1350,7 +1351,6 @@ int shortestDistance(vector<string>& words, string word1, string word2)
         // Current word is one of the target words
         if(words[i] == word1 || words[i] == word2)
         {
-            // This is
             if(base_word != words[i] && base_word != "")
             {
                 dist = min(dist, cntr);
@@ -1366,8 +1366,144 @@ int shortestDistance(vector<string>& words, string word1, string word2)
 }
 
 //======================================================================//
-//1099. Two Sum Less Than K
+//1395. Count Number of Teams
 
+int numTeams(vector<int>& rating) {
+
+    int idx1 = 0;
+    int idx2 = 1;
+    int idx3 = 2;
+    int teamCount = 0;
+    while(idx1 < rating.size() - 2)
+    {
+        idx2 = idx1+1;
+        while(idx2 < rating.size() - 1)
+        {
+            idx3 = idx2+1;
+            while(idx3 < rating.size())
+            {
+                if(rating[idx1] < rating[idx2] && rating[idx2] < rating[idx3])
+                {   // Ascending
+                    teamCount++;
+                }
+                else if(rating[idx1] > rating[idx2] && rating[idx2] > rating[idx3])
+                {
+                    teamCount++;
+                }
+                idx3++;
+            }
+            idx2++;
+        }
+        idx1++;
+    }
+    
+    return teamCount;
+}
+
+
+//======================================================================//
+/*
+Light sensor question
+
+Background
+==========
+Security cameras often have an Ambient Light Sensor (ALS) which measures the amount of light around the camera and triggers a "night mode" when the ambient light is too low.
+
+You've been given an ALS that reports sensor readings using the following struct:
+  typedef struct SensorReading {
+    int status;
+    float lux;
+    uint64_t timestamp; // time of reading
+  } SensorReading;
+  
+To get a sensor reading, call:
+SensorReading read_next_sample(uint64_t max_wait) { ... }
+This function is blocking!  It doesn't return a value until either max_wait microseconds have elapsed or the ALS returns a new value.  The SensorReading.status int indicates whether the value changed (VALID) or not (NO_CHANGE).
+
+(We've implemented a mock version of read_next_sample below, but you do not need to read the code and understand it to complete this task).
+
+Task
+====
+Working with blocking functions is hard and not thread-friendly, so we want to wrap the ALS function in a non-blocking, thread-safe way.
+Design and implement an API that allows users to read lux values from any time within the last 10 minutes.  Your API should be non-blocking and thread-safe.
+*/
+
+/* Status enum */
+enum Status {
+  ERROR = 0,
+  NO_CHANGE = 1,
+  VALID = 2,
+};
+
+/* Don't edit this code */
+struct SensorReading {
+  int status;
+  float lux;
+  uint64_t timestamp;
+};
+
+class sensorData
+{
+    private:
+        queue<SensorReading> q;
+        time_t currTime;
+        mutex mtx;
+        
+        time_t getCurrentTime()
+        {
+            return time(nullptr);
+        }
+        
+    public:
+        sensorData()
+        {
+            currTime = time(nullptr);
+        }
+        
+        bool isAvailable(){
+            if(q.empty())
+                return true;
+            else
+                return false;
+        }
+        
+        void addData(SensorReading reading)
+        {
+            mtx.lock();
+            q.push(reading);
+            mtx.unlock();
+        }
+        
+        SensorReading getData()
+        {
+            mtx.lock();
+            if(q.empty())
+            {
+                mtx.unlock();
+                return SensorReading{ERROR, 0.0, 0};
+            }
+            
+            SensorReading dat = q.front();
+            currTime = getCurrentTime();
+            while(!q.empty() && dat.timestamp > (currTime - 10) )
+            {
+                q.pop();
+                dat = q.front();
+            }
+            
+            if(q.empty()){
+                mtx.unlock();
+                return SensorReading{ERROR, 0.0, 0};
+            }
+            q.pop();
+            mtx.unlock();
+            return dat;
+        }
+};
+
+/* these functions are provided for you; no need to implement */
+uint64_t get_timestamp();
+SensorReading read_next_sample(uint64_t max_wait);
 
 
 //======================================================================//
@@ -1375,6 +1511,8 @@ int shortestDistance(vector<string>& words, string word1, string word2)
 int main()
 {
    
+    vector<int> team = {2,5,3,4,1};
+    printf("Teams %d", numTeams(team));
     
     /*
     vector<int>vec{3,4,6,8,9,10,12,14,15};
