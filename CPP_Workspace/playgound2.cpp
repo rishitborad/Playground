@@ -1173,17 +1173,8 @@ public:
 */
 
 
-/* *********************** My Solution *************************** */
+// My Solution
 
-//vector<string> out_log;
-//RecordDataLogger l;
-//vector<string> log = {"dig1 8 1 5 1","let1 art can","dig2 3 6","let2 own kit dig","let3 art zero"};
-//out_log = l.reorderLogFiles(log);
-//
-//for(int i = 0 ; i < out_log.size(); i++)
-//{
-//    printf("%s\r\n", out_log[i].c_str());
-//}
 
 struct comp{
     template<typename T>
@@ -1367,6 +1358,8 @@ int shortestDistance(vector<string>& words, string word1, string word2)
 
 //======================================================================//
 //1395. Count Number of Teams
+//vector<int> team = {2,5,3,4,1};
+//printf("Teams %d", numTeams(team));
 
 int numTeams(vector<int>& rating) {
 
@@ -1507,12 +1500,93 @@ SensorReading read_next_sample(uint64_t max_wait);
 
 
 //======================================================================//
+//290. Word Pattern
+// Input:
+// if(wordPattern("aabc", "dog dog cat suvar"))
+// {
+//     printf("pattern matched\r\n");
+// }
+// else{
+//     printf("Pattern not matched \r\n");
+// }
+
+bool wordPattern(string pattern, string s) {
+    // Saperate Words in an array
+    // walk thorugh the pattern and words array and push to letter and word map
+    // If letter exist in a map, check value matches the current word
+    
+    int start = 0;
+    vector<string> words;
+    unordered_map<char, string>hash;
+    unordered_set<string> uniqueStrings;
+    
+    int idx = (int)s.find(" ");
+    while(idx > 0)
+    {
+        words.push_back(s.substr(start, idx-start));
+        start = idx+1;
+        idx = (int)s.find(" ", start);
+    }
+    
+    if(start < s.size())
+    {
+        words.push_back(s.substr(start, s.size()-start));
+    }
+    
+    for(int i = 0; i < pattern.size(); i++)
+    {
+        if(hash.find(pattern[i]) == hash.end()){
+            if(uniqueStrings.find(words[i]) == uniqueStrings.end()){
+                hash[pattern[i]] = words[i];
+                uniqueStrings.emplace(words[i]);
+            }
+            else{
+                    return false;
+            }
+        }
+        else{
+            if(hash.at(pattern[i]) != words[i]){
+                return false;
+            }
+        }
+    }
+    
+    for(int i = 0; i < words.size(); i++)
+    {
+        printf("%s\r\n", words[i].c_str());
+    }
+    return true;
+}
+
+//======================================================================//
+//665. Non-decreasing Array
+//vector<int> vec = {5,4,2};    // {4,2,3} {4,2,1} {3,2,5} {5,4,2}
+//if(checkPossibility(vec)){
+//    printf("You can modify this array to get a non-decreasing array\r\n");
+//}
+//else{
+//    printf("You can not modify this array to get a non-decreasing array\r\n");
+//}
+bool checkPossibility(vector<int>& nums) {
+    int outlier = -1;
+    
+    for(size_t i = 0; i < nums.size()-1; i++)
+    {
+        if(nums[i] > nums[i+1])
+        {
+            if(outlier == -1 && ( i == 0 || (nums[i+1]-nums[i-1]) > 1))
+                outlier = (int)i;
+            else
+                return  false;
+        }
+    }
+    return true;
+}
+
+//======================================================================//
 
 int main()
 {
-   
-    vector<int> team = {2,5,3,4,1};
-    printf("Teams %d", numTeams(team));
     
     /*
     vector<int>vec{3,4,6,8,9,10,12,14,15};
