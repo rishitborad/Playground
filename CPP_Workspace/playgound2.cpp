@@ -20,11 +20,21 @@
 #include <list>
 #include <thread>
 #include <mutex>
+
 using namespace std;
 
 //======================================================================//
 // Utility Functions //
 //======================================================================//
+
+//int tilt_acc = 0;
+//TREE_NODE_p head = create_tree_node(3);
+//head->left = create_tree_node(2);
+//head->right = create_tree_node(1);
+//inorder_traversal(head);
+//find_tree_tilt(head, &tilt_acc);
+//printf("tilt %d\r\n", tilt_acc);
+//return 0;
 
 #define MAX(A,B) (A > B ? A : B)
 
@@ -99,6 +109,13 @@ void print_2D_vector_int(vector<vector<int>>& vec)
 
 //https://leetcode.com/problems/median-of-two-sorted-arrays/
 // doesnt work
+// Input:
+    //vector<int>nums1{1,3,6,7,20,22};
+    //vector<int>nums2{5,8,11,15,16};
+    //vector<int>nums1{1,3,6,7,8,20,22};
+    //vector<int>nums2{5,8,11,15,16};
+    //double ans = findMedianSortedArrays(nums1, nums2);
+    //cout << "ans" << ans << endl;
 double findMedianSortedArrays(vector<int>&nums1, vector<int>&nums2)
 {
     int ar1_len = (int)nums1.size();
@@ -177,6 +194,12 @@ double findMedianSortedArrays(vector<int>&nums1, vector<int>&nums2)
 //1 3 5 6 7 8 11 15 16 20 22
 //======================================================================//
 
+//Input:
+//vector<int> nums1{1,3,7};
+//vector<int> nums1{8,4,1,3,6,7,4};
+//sort_array_by_parity(nums1);
+//print_1D_vector_int(nums1);
+
 void sort_array_by_parity(vector<int>&arr)
 {
     int even_ptr = 0;
@@ -234,6 +257,15 @@ int fibbonacci(int n, int* arr)
  }
  */
 //======================================================================//
+//Input:
+    //if(isBigEndian())
+    //{
+    //    printf("Big\r\n");
+    //}
+    //else
+    //{
+    //    printf("little\r\n");
+    //}
 
 bool isBigEndian()
 {
@@ -266,6 +298,17 @@ int find_tree_tilt(TREE_NODE_p head, int *tilt_acc)
 }
 
 //======================================================================//
+//Input:
+//vector<int> bills = {5,5,5,20};
+//if(lemonade_change(bills))
+//{
+//    printf("correct change\r\n");
+//}
+//else
+//{
+//    printf("incorrect change\r\n");
+//}
+
 struct change {
     unsigned int fives;
     unsigned int tens;
@@ -380,6 +423,22 @@ std::string findRestaurant(vector<string>& list1, vector<string>& list2)
 //Start scanning with the first letter of the string, find where the last occurrence of that letter is, that is the end of the current window / partition
 //For all letters in the current window, check if their last occurrence is beyond the current last occurrence, if so then there is an overlap between these windows and the window must expand to encompass all overlapping characters
 //Once the end of the window is reached, all letters within the window have last occurrences less than or equal to this end of window, then the partition is complete, move to the next partition
+
+
+//Input:
+    //string S = "ababcbacamdefegdehijhklij";
+
+    //vector<int> sub = partitionLabels(S);
+    //print_1D_vector_int(sub);
+
+    //vector<string> list1 = {"Sparta","Roman", "Greek", "Persian", "Arabic", "Indian"};
+    //vector<string> list2 = {"English", "Hindi", "Sparta", "Roman", "Chinese", "Mexicans"};
+    //printf("%s\r\n", findRestaurant(list1, list2).c_str());
+
+    //if(canConstruct("abc", "abdd"))
+    //    printf("True\r\n");
+    //else
+    //    printf("false\r\n");
 bool isLastChar(string S, char c, int idx)
 {
     for(int i = idx + 1; i < S.size(); i++)
@@ -440,7 +499,22 @@ vector<int> partitionLabels(string S)
 
 //======================================================================//
 
-
+/*
+    vector<string>orderList = {"zld 93 12"
+        ,"fp kindle book"
+        ,"10a echo show"
+        ,"17g 12 25 6"
+        ,"abl kindle book"
+        ,"125 echo dot second generation"
+    };
+    
+    vector<string> ans = amazon_order_sorting(orderList);
+    
+    for(int i = 0; i < ans.size(); i++)
+    {
+        printf("%s\r\n", ans[i].c_str());
+    }
+*/
 
 class Order
 {
@@ -561,7 +635,57 @@ vector<string> amazon_order_sorting(vector<string>orderlist)
 }
 
 //======================================================================//
-
+//Input:
+/*
+    Logger logger;
+    
+    if(logger.shouldPrintMessage(1, "Foo"))
+    {
+        printf("1 Foo true\r\n");
+    }
+    else{
+        printf("1 foo false\r\n");
+    }
+    
+    if(logger.shouldPrintMessage(2, "Bar"))
+    {
+        printf("2 Bar true\r\n");
+    }
+    else{
+        printf("2 Bar false\r\n");
+    }
+    
+    if(logger.shouldPrintMessage(3, "Foo"))
+    {
+        printf("3 Foo true\r\n");
+    }
+    else{
+        printf("3 foo false\r\n");
+    }
+    
+    if(logger.shouldPrintMessage(8, "Bar"))
+    {
+        printf("8 Bar true\r\n");
+    }
+    else{
+        printf("8 Bar false\r\n");
+    }
+    if(logger.shouldPrintMessage(10, "Foo"))
+    {
+        printf("10 Foo true\r\n");
+    }
+    else{
+        printf("10 foo false\r\n");
+    }
+    if(logger.shouldPrintMessage(11, "Foo"))
+    {
+        printf("11 Foo true\r\n");
+    }
+    else{
+        printf("11 foo false\r\n");
+    }
+    
+*/
 class Logger
 {
 public:
@@ -596,6 +720,13 @@ public:
 };
 
 //======================================================================//
+/*
+    vector<string>querries {"sparta", "spartaaa", "leemon"};
+    vector<string>words {"aaaabbcs", "abcsrsaa", "bbcjdhs"};
+    
+    vector<int> ans = compare_by_freq_of_smallest_char(querries, words);
+    print_1D_vector_int(ans);
+*/
 
 vector<int> compare_by_freq_of_smallest_char(vector<string>& queries, vector<string>& words)
 {
@@ -665,6 +796,23 @@ vector<int> compare_by_freq_of_smallest_char(vector<string>& queries, vector<str
 }
 
 //======================================================================//
+/*
+    TREE_NODE_p head = create_tree_node(1);
+    head->left = create_tree_node(2);
+    head->right = create_tree_node(3);
+    head->left->left = create_tree_node(4);
+    head->left->right = create_tree_node(5);
+    head->right->left = create_tree_node(6);
+    head->right->right = create_tree_node(7);
+    
+    vector<int> tree = print_tree_levels(head);
+    print_1D_vector_int(tree);
+    vector<int>to_delete{3,5};
+    vector<vector<int>>ans = delNodes(head, to_delete);
+    print_2D_vector_int(ans);
+*/
+    
+
 // Needs to resolve one bug to make it work
 vector<int> print_tree_levels(TREE_NODE_p head)
 {
@@ -762,7 +910,13 @@ vector<vector<int>> delNodes(TREE_NODE_p root, vector<int>& to_delete)
 
 //======================================================================//
 // 1055. Shortest way to form a string
+//Input:
+    /*
+    string soruce = "abc";
+    string target = "acbac";
 
+    printf("Shortest way %d\r\n", shortestWay(soruce, target));
+    */
 int shortestWay(string source, string target)
 {
     
@@ -811,7 +965,14 @@ int shortestWay(string source, string target)
 
 //======================================================================//
 //1057. Campus Bikes
+//Input:
+    /*
+    vector<vector<int>>workers{{1,1},{3,1},{0,3}};
+    vector<vector<int>>bikes{{2,2},{4,4},{2,4}};
 
+    vector<int>ans = assignBikes(workers, bikes);
+    print_1D_vector_int(ans);
+     */
 int distance(pair<int,int> a, pair<int,int> b)
 {
     return abs(a.first-b.first)+abs(a.second-b.second);
@@ -931,6 +1092,12 @@ public:
 // Input: [3,6,9,12]
 // Output: 4
 // Explanation: The whole array is an arithmetic sequence with steps of length = 3.
+//Input
+/*
+vector<int>vec{3,4,6,8,9,10,12,14,15};
+printf("longest Arithmetic Subsequence %d\r\n", longestArithmeticSubsequence(vec));
+ */
+
 int longestArithmeticSubsequence(vector<int>&A)
 {
     int max = 0;
@@ -1584,175 +1751,109 @@ bool checkPossibility(vector<int>& nums) {
 }
 
 //======================================================================//
+//Circular Ring Buffer
+//Input:
+    //circBuffer<char> ring(5);
+    //char c;
+    //int temp = ring.circ_pop(&c);
+    //printf("pop retval %d char %c\r\n", temp, c);
+    //c = 'a';
+    //temp = ring.circ_push(c);
+    //printf("pop retval %d char %c\r\n", temp, c);
+    //c = 'b';
+    //temp = ring.circ_push(c);
+    //printf("pop retval %d char %c\r\n", temp, c);
+    //ring.print();
+    //c = 'c';
+    //temp = ring.circ_push(c);
+    //printf("push retval %d\r\n", temp);
+    //c = 'd';
+    //temp = ring.circ_push(c);
+    //printf("push retval %d\r\n", temp);
+    //c = '2';
+    //temp = ring.circ_push(c);
+    //printf("push retval %d\r\n", temp);
+    //c = '1';
+    //temp = ring.circ_push(c);
+    //printf("push retval %d\r\n", temp);
+    //ring.print();
+    //temp = ring.circ_pop(&c);
+    //printf("pop retval %d char %c\r\n", temp, c);
+    //ring.print();
+    //temp = ring.circ_pop(&c);
+    //printf("pop retval %d char %c\r\n", temp, c);
+    //temp = ring.circ_pop(&c);
+    //printf("pop retval %d char %c\r\n", temp, c);
+    //temp = ring.circ_pop(&c);
+    //printf("pop retval %d char %c\r\n", temp, c);
+    //temp = ring.circ_pop(&c);
+    //printf("pop retval %d char %c\r\n", temp, c);
+    //ring.print();
+template <typename T>
+
+class circBuffer{
+    uint16_t read_p;
+    uint16_t write_p;
+    const size_t size;
+    vector<T> buffer;
+public:
+    circBuffer(size_t bufsize)
+    : read_p(0)
+    , write_p(0)
+    ,size(bufsize){
+        buffer.reserve(size);
+    }
+    
+    int circ_push(T const c){
+        uint16_t next = write_p + 1;
+        
+        if(next >= size)
+            next = 0;
+        
+        if(next == read_p)
+            return -1;          // Discard, ring buffer is full
+        
+        buffer[write_p] = c;
+        write_p = next;
+        
+        return 0;
+    }
+    
+    int circ_pop(T * const c){
+        if(read_p == write_p)
+            return -1;              // ringBuffer empty
+        
+        uint16_t next = read_p + 1;
+        
+        if(next >= size)
+            next = 0;
+        
+        *c = buffer[read_p];
+        read_p = next;
+        
+        return 0;
+    }
+    
+    void print()
+    {
+        int i = read_p;
+        while(i != write_p)
+        {
+            printf("%c ", buffer[i]);
+            i++;
+            if(i >= size)
+                i = 0;
+        }
+        printf("\r\n");
+    }
+};
+
+//======================================================================//
 
 int main()
 {
-    
-    /*
-    vector<int>vec{3,4,6,8,9,10,12,14,15};
-    printf("longest Arithmetic Subsequence %d\r\n", longestArithmeticSubsequence(vec));
-     */
-    /*
-    vector<vector<int>>workers{{1,1},{3,1},{0,3}};
-    vector<vector<int>>bikes{{2,2},{4,4},{2,4}};
-    
-    vector<int>ans = assignBikes(workers, bikes);
-    print_1D_vector_int(ans);
-     */
-    /*
-    string soruce = "abc";
-    string target = "acbac";
-    
-    printf("Shortest way %d\r\n", shortestWay(soruce, target));
-    */
-/*
-    TREE_NODE_p head = create_tree_node(1);
-    head->left = create_tree_node(2);
-    head->right = create_tree_node(3);
-    head->left->left = create_tree_node(4);
-    head->left->right = create_tree_node(5);
-    head->right->left = create_tree_node(6);
-    head->right->right = create_tree_node(7);
-    
-    vector<int> tree = print_tree_levels(head);
-    print_1D_vector_int(tree);
-    vector<int>to_delete{3,5};
-    vector<vector<int>>ans = delNodes(head, to_delete);
-    print_2D_vector_int(ans);
-*/
-/*
-    vector<string>querries {"sparta", "spartaaa", "leemon"};
-    vector<string>words {"aaaabbcs", "abcsrsaa", "bbcjdhs"};
-    
-    vector<int> ans = compare_by_freq_of_smallest_char(querries, words);
-    print_1D_vector_int(ans);
-*/
-    
-/*
-    Logger logger;
-    
-    if(logger.shouldPrintMessage(1, "Foo"))
-    {
-        printf("1 Foo true\r\n");
-    }
-    else{
-        printf("1 foo false\r\n");
-    }
-    
-    if(logger.shouldPrintMessage(2, "Bar"))
-    {
-        printf("2 Bar true\r\n");
-    }
-    else{
-        printf("2 Bar false\r\n");
-    }
-    
-    if(logger.shouldPrintMessage(3, "Foo"))
-    {
-        printf("3 Foo true\r\n");
-    }
-    else{
-        printf("3 foo false\r\n");
-    }
-    
-    if(logger.shouldPrintMessage(8, "Bar"))
-    {
-        printf("8 Bar true\r\n");
-    }
-    else{
-        printf("8 Bar false\r\n");
-    }
-    if(logger.shouldPrintMessage(10, "Foo"))
-    {
-        printf("10 Foo true\r\n");
-    }
-    else{
-        printf("10 foo false\r\n");
-    }
-    if(logger.shouldPrintMessage(11, "Foo"))
-    {
-        printf("11 Foo true\r\n");
-    }
-    else{
-        printf("11 foo false\r\n");
-    }
-    
-*/
-    
-/*
-    vector<string>orderList = {"zld 93 12"
-        ,"fp kindle book"
-        ,"10a echo show"
-        ,"17g 12 25 6"
-        ,"abl kindle book"
-        ,"125 echo dot second generation"
-    };
-    
-    vector<string> ans = amazon_order_sorting(orderList);
-    
-    for(int i = 0; i < ans.size(); i++)
-    {
-        printf("%s\r\n", ans[i].c_str());
-    }
-*/
-    
-    //string S = "ababcbacamdefegdehijhklij";
-    
-    //vector<int> sub = partitionLabels(S);
-    //print_1D_vector_int(sub);
-    
-    //vector<string> list1 = {"Sparta","Roman", "Greek", "Persian", "Arabic", "Indian"};
-    //vector<string> list2 = {"English", "Hindi", "Sparta", "Roman", "Chinese", "Mexicans"};
-    //printf("%s\r\n", findRestaurant(list1, list2).c_str());
-    
-    //if(canConstruct("abc", "abdd"))
-    //    printf("True\r\n");
-    //else
-    //    printf("false\r\n");
-    
-    //vector<int> bills = {5,5,5,20};
-    //if(lemonade_change(bills))
-    //{
-    //    printf("correct change\r\n");
-    //}
-    //else
-    //{
-    //    printf("incorrect change\r\n");
-    //}
-    
-    //int tilt_acc = 0;
-    //TREE_NODE_p head = create_tree_node(3);
-    //head->left = create_tree_node(2);
-    //head->right = create_tree_node(1);
-    //inorder_traversal(head);
-    //find_tree_tilt(head, &tilt_acc);
-    //printf("tilt %d\r\n", tilt_acc);
-    
-    
-    //if(isBigEndian())
-    //{
-    //    printf("Big\r\n");
-    //}
-    //else
-    //{
-    //    printf("little\r\n");
-    //}
-    
-    
-    //vector<int> nums1{1,3,7};
-    //vector<int> nums1{8,4,1,3,6,7,4};
-    //sort_array_by_parity(nums1);
-    //print_1D_vector_int(nums1);
-    
-    // ######
-    //vector<int>nums1{1,3,6,7,20,22};
-    //vector<int>nums2{5,8,11,15,16};
-    //vector<int>nums1{1,3,6,7,8,20,22};
-    //vector<int>nums2{5,8,11,15,16};
-    //double ans = findMedianSortedArrays(nums1, nums2);
-    //cout << "ans" << ans << endl;
-    
-    //return 0;
+
+    return 0;
 }
 
 /*
