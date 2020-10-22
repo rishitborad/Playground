@@ -1104,7 +1104,6 @@ int longest_path(string path)
 {
     int maxlen = 0;
     int sum = 0;
-    bool isfile = false;
     int depth = 0;
     bool count_depth = false;
     

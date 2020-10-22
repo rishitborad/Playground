@@ -1849,10 +1849,114 @@ public:
 };
 
 //======================================================================//
+// Rotate 2D Matrix 90 degree
+//Input:
+    //int matrix[4][4] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+    //int result[4][4] = {0};
+    //rotate2D((int *)matrix, 4, 4, (int *)matrix, (int *)result);
+    //
+    //for(int i = 0; i < 4; i++)
+    //{
+    //    for(int j = 0; j < 4; j++)
+    //    {
+    //        printf("%d\t", result[i][j]);
+    //    }
+    //    printf("\r\n");
+    //}
+
+void rotate2D(int* matrix1, int m, int n, int* matrix2, int* result)
+{
+    for(int i = 0 ;i < m; i++)
+    {
+        for(int j = 0; j < n; j++)
+        {
+            *((result+i*n)+j)= *((matrix1+i*n)+j) + *((matrix1+i*n)+j);
+        }
+    }
+}
+
+
+//======================================================================//
+// LL Stack without double pointer
+//Input:
+    //myStack stack;
+    //printf("Peek %d\r\n", stack.peek());
+    //printf("Pop %d\r\n", stack.pop());
+    //stack.push(5);
+    //printf("Peek %d\r\n", stack.peek());
+    //printf("Pop %d\r\n", stack.pop());
+    //printf("Peek %d\r\n", stack.peek());
+    //stack.push(1);
+    //stack.push(2);
+    //stack.push(3);
+    //stack.push(4);
+    //printf("Stack size %d\r\n", stack.size());
+    //for(int i = stack.size(); i > 0; i--)
+    //{
+    //    printf("Processing %d %d: \r\n", i , stack.size());
+    //    printf("\tPeek %d %d\r\n", i, stack.peek());
+    //    printf("\tPop %d size now %d\r\n", stack.pop(), stack.size());
+    //}
+
+typedef struct node{
+    struct node* next;
+    int val;
+    node(){}
+    node(int data): next(nullptr),val(data){};
+    node(int data, node* p): next(p),val(data){};
+}NODE_t, *NODE_p;
+
+class myStack{
+private:
+    NODE_p top;
+    int stackSize;
+public:
+    myStack(): top(nullptr), stackSize(0){};
+    
+    void push(int val){
+        if(!top){
+            top = new node(val);
+        }
+        else{
+            NODE_p temp = new node(val, top);
+            top = temp;
+        }
+        stackSize++;
+    }
+    
+    int pop(){
+        if(top){
+            NODE_p temp = top;
+            top = top->next;
+            int val = temp->val;
+            free(temp);
+            stackSize--;
+            return val;
+        }
+        return -1;
+    }
+    
+    int peek(){
+        if (top) {
+            return top->val;
+        }
+        return -1;
+    }
+    bool isEmpty()
+    {
+        return stackSize ? true : false;
+    }
+    int size(){
+        return stackSize;
+    }
+};
+
+
+//======================================================================//
 
 int main()
 {
-
+    printf("Exiting\r\n");
     return 0;
 }
 
