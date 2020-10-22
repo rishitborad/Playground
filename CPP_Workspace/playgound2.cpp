@@ -1951,12 +1951,42 @@ public:
     }
 };
 
+//======================================================================//
+//Find missing number from a sequential array eg [0, 1, 3], Ans: missing number is 2
+
+// Intuition:
+//"XOR of same numbers is zero"
+// Above statement is powerfull and can solve a lot of problems along the lines of this one.
+// Idea is to xor 0 with its index i.e. 0 and the result is zero
+// Algorithm:
+    // result = 0
+    // repeat above for the length of the vector
+        // XOR current index with result
+        // XOR current element with result
+    // XOR result with size of vector with result -- This is important
+    // return
+
+// Other variations of this problem can be
+    // Find the non repeating element from the vector
+    // Find missing number from sequential array starting from N
+
+uint16_t findMissingNumber(vector<uint16_t>& vec)
+{
+    uint16_t temp = 0;
+    for(int i = 0; i < vec.size(); i++){
+        temp ^= i;
+        temp ^= vec[i];
+    }
+    return temp ^ (uint16_t)vec.size();
+}
+
 
 //======================================================================//
 
 int main()
 {
-    printf("Exiting\r\n");
+    vector<uint16_t> vec = {0,1,3};
+    printf("Missing number is %u\r\n", findMissingNumber(vec));
     return 0;
 }
 
