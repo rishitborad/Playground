@@ -20,7 +20,7 @@
 #include <list>
 #include <thread>
 #include <mutex>
-
+#include <algorithm>
 using namespace std;
 
 //======================================================================//
@@ -1491,7 +1491,8 @@ public:
 /* Explination:
     there are 3 possibilities to count the distance:
  1. if the current word and the word we started counting from (base word) are same - Distance resets
- 2. if current word and the word we started counting from (base word) are different - Log distnce if minimum, update base word
+ 2. if current word and the word we started counting from (base word) are different (eg. base_word == word1 & current_word == word2) - Log distnce if minimum, update base word
+ 3. if current word doesnt match with either word1 or word2, in that case, just count up
  
  Other things:
     count up always
@@ -1970,6 +1971,9 @@ public:
     // Find the non repeating element from the vector
     // Find missing number from sequential array starting from N
 
+//vector<uint16_t> vec = {0,1,3};
+//printf("Missing number is %u\r\n", findMissingNumber(vec));
+
 uint16_t findMissingNumber(vector<uint16_t>& vec)
 {
     uint16_t temp = 0;
@@ -1982,11 +1986,105 @@ uint16_t findMissingNumber(vector<uint16_t>& vec)
 
 
 //======================================================================//
+//Amazon phone interview question, create two methods for a deck, shuffle() and draw()
+//Input:
+//    vector<int> deck;
+//
+//    create_deck(deck);
+//    shuffle_deck(deck);
+//
+//
+//    for(int i = 0; i < (int)deck.size(); i++)
+//    {
+//      printf("%d, ",deck[i]);
+//    }
+//    printf("erased %d\r\n", draw_card(deck));
+//    for(int i = 0; i < (int)deck.size(); i++)
+//    {
+//      printf("%d, ",deck[i]);
+//    }
+void create_deck(vector<int>& vec)
+{
+  for(int i=0 ; i < 52; i++)
+  {
+    vec.push_back(i);
+  }
+}
+
+int myRand(int j)
+{
+  return rand() % j;
+}
+
+void shuffle_deck(vector<int>& deck)
+{
+  random_shuffle(deck.begin(), deck.end(), myRand);
+}
+
+int draw_card(vector<int>& deck)
+{
+  int card = *deck.begin();
+  deck.erase(deck.begin());
+  return card;
+}
+
+//======================================================================//
+//819. Most Common Word
+//Input:
+//    string para = "Bob hit a ball, the hit BALL flew far after it was hit.";
+//    vector<string> banned = {"hit"};
+//    printf("Most commonw word is %s\r\n", mostCommonWord(para, banned).c_str());
+void extractWords(string para, map<string,int>& words)
+{
+    size_t i = 0;
+    size_t start = 0;
+    while(start < para.size())
+    {
+        if(! (('A' <= para[i] && para[i] <= 'Z') || ('a' <= para[i] && para[i] <= 'z'))){
+            if(i - start > 0){
+                string substr = para.substr(start, i - start);
+                transform(substr.begin(), substr.end(), substr.begin(), [](unsigned char c){return tolower(c);});
+                words[substr]++;
+            }
+            start = i + 1;
+        }
+        i++;
+    }
+}
+
+struct myCompare{
+  
+    bool operator()(const pair<string,int>& a, const pair<string,int>& b){
+        return a.second < b.second;
+    }
+};
+
+string mostCommonWord(string para, vector<string> banned) {
+    
+    priority_queue<pair<string, int>, vector<pair<string, int>>, myCompare> pq;
+    map<string, int> words;
+    extractWords(para, words);
+    printf("Printing now\r\n");
+    for(auto i = words.begin(); i != words.end(); i++)
+    {
+        printf("%s %d\r\n", i->first.c_str(), i->second);
+        pq.push(*i);
+    }
+    
+    while(std::find(banned.begin(), banned.end(), pq.top().first) != banned.end())
+    {
+        pq.pop();
+    }
+    
+    return pq.top().first;
+}
+
+//======================================================================//
 
 int main()
 {
-    vector<uint16_t> vec = {0,1,3};
-    printf("Missing number is %u\r\n", findMissingNumber(vec));
+    
+    
     return 0;
 }
 
