@@ -2034,7 +2034,25 @@ int draw_card(vector<int>& deck)
 //    string para = "Bob hit a ball, the hit BALL flew far after it was hit.";
 //    vector<string> banned = {"hit"};
 //    printf("Most commonw word is %s\r\n", mostCommonWord(para, banned).c_str());
-void extractWords(string para, map<string,int>& words)
+
+
+struct myComparePair{
+  
+    bool operator()(const pair<string,int>& a, const pair<string,int>& b){
+        return a.second < b.second;
+    }
+};
+
+template<typename T>
+struct myCompareMap{
+  
+    bool operator()(const T& a, const T& b){
+        return a.second < b.second;
+    }
+};
+
+template <typename T>
+void extractWords(string para, T& words)
 {
     size_t i = 0;
     size_t start = 0;
@@ -2052,16 +2070,11 @@ void extractWords(string para, map<string,int>& words)
     }
 }
 
-struct myCompare{
-  
-    bool operator()(const pair<string,int>& a, const pair<string,int>& b){
-        return a.second < b.second;
-    }
-};
-
-string mostCommonWord(string para, vector<string> banned) {
+/* This was my first implementation*/
+// Time Complexity O(n + (m*n)) because this implementation rotates throug the list of banned words n times which is approximately n2
+string mostCommonWord_firsttry(string para, vector<string> banned) {
     
-    priority_queue<pair<string, int>, vector<pair<string, int>>, myCompare> pq;
+    priority_queue<pair<string, int>, vector<pair<string, int>>, myComparePair> pq;
     map<string, int> words;
     extractWords(para, words);
     printf("Printing now\r\n");
@@ -2079,11 +2092,68 @@ string mostCommonWord(string para, vector<string> banned) {
     return pq.top().first;
 }
 
+
+// Time Complexity O(n)
+string mostCommonWord_secondtry(string para, vector<string> banned){
+    map<string,int> wordMap;
+    size_t i = 0;
+    size_t start = 0;
+    string maxString = "";
+    int maxOccurance = 0;
+    
+    // Saheb suggested this
+    // add each banned word to the map and set to -1
+    // This will enable us to go through the list of banned only once
+    for(size_t i = 0; i < banned.size(); i++)
+    {
+        wordMap[banned[i]] = -1;
+    }
+    
+    // Start adding words from para to the map, check if the value is not -1(i.e banned)
+    while(start < para.size()){
+        if(! (('A' <= para[i] && para[i] <= 'Z') || ('a' <= para[i] && para[i] <= 'z'))){
+            if(i - start > 0){
+                string substr = para.substr(start, i - start);
+                transform(substr.begin(), substr.end(), substr.begin(), [](unsigned char c){return tolower(c);});
+                if(wordMap[substr] != -1){
+                    wordMap[substr]++;
+                    maxOccurance = max(maxOccurance, wordMap[substr]);
+                    if(maxOccurance == wordMap[substr])
+                        maxString = substr;
+                }
+            }start = i + 1;
+        }i++;
+    }
+    
+    return maxString;
+}
+
+//======================================================================//
+
+//shift array
+
+void shift_array(vector<int>& arr, int shift)
+{
+//    int temp = arr[shift];
+    int j = 0;
+    for(int i = 0; i < arr.size(); i++)
+    {
+        if((shift + i) < arr.size()){
+            arr[shift+i] = arr[i];
+        }
+        else{
+            arr[j++] = arr[i];
+        }
+    }
+}
+
 //======================================================================//
 
 int main()
 {
-    
+    string para = "Bob hit a ball, the hit BALL flew far after it was hit.";
+    vector<string> banned = {"hit"};
+    printf("Most commonw word is %s\r\n", mostCommonWord_secondtry(para, banned).c_str());
     
     return 0;
 }
