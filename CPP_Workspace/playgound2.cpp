@@ -2035,18 +2035,9 @@ int draw_card(vector<int>& deck)
 //    vector<string> banned = {"hit"};
 //    printf("Most commonw word is %s\r\n", mostCommonWord(para, banned).c_str());
 
-
 struct myComparePair{
   
     bool operator()(const pair<string,int>& a, const pair<string,int>& b){
-        return a.second < b.second;
-    }
-};
-
-template<typename T>
-struct myCompareMap{
-  
-    bool operator()(const T& a, const T& b){
         return a.second < b.second;
     }
 };
@@ -2151,9 +2142,7 @@ void shift_array(vector<int>& arr, int shift)
 
 int main()
 {
-    string para = "Bob hit a ball, the hit BALL flew far after it was hit.";
-    vector<string> banned = {"hit"};
-    printf("Most commonw word is %s\r\n", mostCommonWord_secondtry(para, banned).c_str());
+
     
     return 0;
 }
