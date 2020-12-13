@@ -2121,19 +2121,40 @@ string mostCommonWord_secondtry(string para, vector<string> banned){
 
 //======================================================================//
 
+
+void move(vector<int>& arr, int i, int j){
+    arr[i] = arr[j];
+}
+
 //shift array
 
 void shift_array(vector<int>& arr, int shift)
 {
-//    int temp = arr[shift];
-    int j = 0;
-    for(int i = 0; i < arr.size(); i++)
-    {
-        if((shift + i) < arr.size()){
-            arr[shift+i] = arr[i];
+    int curr = 0;
+    int next = curr + shift;
+    int temp = arr[curr];
+    
+    if(arr.size() % shift != 0){
+        while(curr != (arr.size()-shift)){
+            next = curr + shift;
+            if(next > arr.size()){
+                next = shift - ((int)arr.size()-curr);
+            }
+            move(arr, curr, next);
+            curr = next;
         }
-        else{
-            arr[j++] = arr[i];
+        arr[curr] = temp;
+    }else{
+        for(int i = 0; i < shift; i++){
+            curr = i;
+            next = curr + shift;
+            temp = arr[curr];
+            while(curr < arr.size()){
+                next = curr + shift;
+                move(arr, curr, next);
+                curr = next;
+            }
+            arr[curr-shift] = temp;
         }
     }
 }
@@ -2142,8 +2163,11 @@ void shift_array(vector<int>& arr, int shift)
 
 int main()
 {
-
-    
+    vector<int> shiftArr = {1,2,3,4,5,6};
+    shift_array(shiftArr, 3);
+    for(int i = 0 ; i < shiftArr.size(); i++){
+        printf("%d ", shiftArr[i]);
+    }
     return 0;
 }
 
