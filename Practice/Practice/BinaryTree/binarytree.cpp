@@ -29,6 +29,57 @@ typedef struct node3{
     node3(int val):val(val),left(nullptr),right(nullptr),level(nullptr){}
 }NODE3_t, *NODE3_p;
 
+
+//INPUT:
+//    LevelOrder a;
+//    NODE_p head = new NODE_t(10);
+//    head->left = new NODE_t(8);
+//    head->right = new NODE_t(9);
+//    head->left->left = new NODE_t(3);
+//    head->left->right = new NODE_t(4);
+//    head->right->left = new NODE_t(5);
+//    head->right->right = new NODE_t(6);
+//    head->left->left->left = new NODE_t(1);
+//    head->left->right->left = new NODE_t(2);
+//    head->right->right->right = new NODE_t(7);
+//    a.printLevelOrderBT(head);
+//
+//    vector<float> levelAverages = a.levelAverageBT(head);
+//    for(int i = 0; i < (int)levelAverages.size(); i++){printf("level %d avg is %f\r\n", i, levelAverages[i]);}
+//
+//    printf("Binary tree Min level count is %d\r\n", a.minDepthBT(head));
+//    for(int i = 0;i<100; i++){
+//        if(a.pathSumBT(head, i)){
+//            printf("BT has sum %d\r\n",i);
+//        }
+//    }
+//    int sum = 25;
+//    printf("There are %d path in BT with sum %d\r\n", a.allpathSumBT(head, sum), sum);
+//
+//    vector<vector<int>> treePaths;
+//    a.printTreePaths(head, treePaths);
+//    for(int i = 0; i < (int)treePaths.size(); i++){
+//        for(int j = 0; j < (int)treePaths[i].size(); j++){
+//            printf("%d, ", treePaths[i][j]);
+//        }
+//        printf("\r\n");
+//    }
+//
+//    vector<int> pathSum;
+//    int pathTotal = 0;
+//    a.getAllPathSum(head->left, pathTotal, pathSum, 0);
+//    for(int i = 0 ; i < pathSum.size(); i++){
+//        pathTotal += pathSum[i];
+//    }
+//    printf("Total of all paths is %d\r\n",pathTotal);
+//
+//    vector<int>pathSequence = {10,9,5};
+//    if(a.pathWithGivenSequence(head, pathSequence)){
+//        printf("This path is present in BT\r\n");
+//    }
+//    printf("counts paths for a sum %d\r\n", a.countPathsForSum(head, 18));
+
+
 class LevelOrder{
 private:
 public:
@@ -256,54 +307,63 @@ public:
     }
 };
 
+
+//======================================================================//
+//1110. Delete Nodes And Return Forest
+
+void delNodesUtil(NODE_p root, vector<int> to_del, vector<NODE_p>& heads){
+    if(root){
+        delNodesUtil(root->left, to_del, heads);
+        delNodesUtil(root->right, to_del, heads);
+        
+        if(root->left != nullptr){
+            if(std::find(to_del.begin(), to_del.end(), root->left->val) != to_del.end()){
+                heads.push_back(root->left);
+                root->left = nullptr;
+            }
+        }
+        // Find in to_del vector
+        if(root->right != nullptr){
+            if(std::find(to_del.begin(), to_del.end(), root->right->val) != to_del.end()){
+                heads.push_back(root->right);
+                root->right = nullptr;
+            }
+        }
+    }
+}
+
+void getHeads(vector<NODE_p>&forest, vector<NODE_p>&nodes){
+    for(int i = 0; i< nodes.size(); i++){
+        forest.push_back(nodes[i]->left);
+        forest.push_back(nodes[i]->right);
+    }
+}
+
+vector<NODE_p> delNodes(NODE_p root, vector<int>& to_delete) {
+    vector<NODE_p> heads;
+    delNodesUtil(root, to_delete, heads);
+    vector<NODE_p> forest;
+    forest.reserve(heads.size()*2);
+    forest.push_back(root);
+    getHeads(forest, heads);
+    return forest;
+}
+
+//======================================================================//
+
 // __MAIN__
 void run_binarytree()
 {
-    LevelOrder a;
-    NODE_p head = new NODE_t(10);
-    head->left = new NODE_t(8);
-    head->right = new NODE_t(9);
-    head->left->left = new NODE_t(3);
-    head->left->right = new NODE_t(4);
-    head->right->left = new NODE_t(5);
-    head->right->right = new NODE_t(6);
-    head->left->left->left = new NODE_t(1);
-    head->left->right->left = new NODE_t(2);
-    head->right->right->right = new NODE_t(7);
-    a.printLevelOrderBT(head);
-    
-    vector<float> levelAverages = a.levelAverageBT(head);
-    for(int i = 0; i < (int)levelAverages.size(); i++){printf("level %d avg is %f\r\n", i, levelAverages[i]);}
-    
-    printf("Binary tree Min level count is %d\r\n", a.minDepthBT(head));
-    for(int i = 0;i<100; i++){
-        if(a.pathSumBT(head, i)){
-            printf("BT has sum %d\r\n",i);
-        }
+    NODE_p head = new NODE_t(1);
+        head->left = new NODE_t(2);
+        head->right = new NODE_t(3);
+        head->left->left = new NODE_t(4);
+        head->left->right = new NODE_t(4);
+        head->right->left = new NODE_t(6);
+        head->right->right = new NODE_t(7);
+    vector<int>to_del = {3,5};
+    vector<NODE_p> forest = delNodes(head, to_del);
+    for(int i = 0 ;i < forest.size(); i++){
+        printf("%d\r\n", forest[i]->val);
     }
-    int sum = 25;
-    printf("There are %d path in BT with sum %d\r\n", a.allpathSumBT(head, sum), sum);
-    
-    vector<vector<int>> treePaths;
-    a.printTreePaths(head, treePaths);
-    for(int i = 0; i < (int)treePaths.size(); i++){
-        for(int j = 0; j < (int)treePaths[i].size(); j++){
-            printf("%d, ", treePaths[i][j]);
-        }
-        printf("\r\n");
-    }
-    
-    vector<int> pathSum;
-    int pathTotal = 0;
-    a.getAllPathSum(head->left, pathTotal, pathSum, 0);
-    for(int i = 0 ; i < pathSum.size(); i++){
-        pathTotal += pathSum[i];
-    }
-    printf("Total of all paths is %d\r\n",pathTotal);
-    
-    vector<int>pathSequence = {10,9,5};
-    if(a.pathWithGivenSequence(head, pathSequence)){
-        printf("This path is present in BT\r\n");
-    }
-    printf("counts paths for a sum %d\r\n", a.countPathsForSum(head, 18));
 }

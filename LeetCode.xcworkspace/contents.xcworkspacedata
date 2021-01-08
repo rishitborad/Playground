@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:CPP_Workspace/CPP_Workspace.xcodeproj">
+      location = "group:Practice/Practice.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:../../MTLT335/FaultDetectionTest/Practice/Practice.xcodeproj">
+      location = "group:CPP_Workspace/CPP_Workspace.xcodeproj">
    </FileRef>
 </Workspace>

@@ -15,6 +15,7 @@ extern void run_binarytree();
 extern void run_heap();
 extern void run_subset();
 extern void run_leetcode1();
+extern void run_educativeIO();
 
 int main(int argc, const char * argv[]) {
 //    run_graph();
@@ -24,5 +25,6 @@ int main(int argc, const char * argv[]) {
 //    run_heap();
 //    run_subset();
     run_leetcode1();
+//    run_educativeIO();
     return 0;
 }

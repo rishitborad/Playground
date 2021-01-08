@@ -17,4 +17,10 @@ using namespace std;
 template<typename T>
 void common_print_2D_vector(vector<vector<T>> in);
 
+template<typename T>
+void common_print_1D_vector(vector<T> in);
+
+template<typename T>
+void common_swap(T *item1, T *item2);
+
 #endif /* common_hpp */
