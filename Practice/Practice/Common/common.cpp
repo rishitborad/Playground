@@ -33,9 +33,6 @@ void common_print_2D_vector(vector<vector<T>> in)
 
 template void common_print_2D_vector<int>(vector<vector<int>> input);
 
-
-
-
 template<typename T>
 void common_swap(T *item1, T *item2){
     T temp = *item1;

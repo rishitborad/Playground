@@ -1564,7 +1564,7 @@ int numTeams(vector<int>& rating) {
 
 //======================================================================//
 /*
-Light sensor question
+Verkada Light sensor question
 
 Background
 ==========
@@ -1811,6 +1811,7 @@ public:
         if(next >= size)
             next = 0;
         
+        // Important, check if next is equal to read_p not less than or grate than
         if(next == read_p)
             return -1;          // Discard, ring buffer is full
         

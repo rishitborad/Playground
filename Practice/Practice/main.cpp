@@ -18,13 +18,13 @@ extern void run_leetcode1();
 extern void run_educativeIO();
 
 int main(int argc, const char * argv[]) {
-//    run_graph();
+    run_graph();
 //    run_google();
 //    run_linkedList();
 //    run_binarytree();
 //    run_heap();
 //    run_subset();
-    run_leetcode1();
+//    run_leetcode1();
 //    run_educativeIO();
     return 0;
 }

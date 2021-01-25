@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B08704925B9DE4C000131AA /* verkada.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B08704825B9DE4C000131AA /* verkada.cpp */; };
 		1B5DB99C2553BBC00018BF93 /* google.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B5DB99B2553BBC00018BF93 /* google.cpp */; };
 		1B5DB9A4255736F40018BF93 /* linkedlist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B5DB9A3255736F40018BF93 /* linkedlist.cpp */; };
 		1B5DB9A92559978B0018BF93 /* binarytree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B5DB9A82559978B0018BF93 /* binarytree.cpp */; };
@@ -14,6 +15,7 @@
 		1BB44D5C2564248500206C12 /* heap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB44D5B2564248500206C12 /* heap.cpp */; };
 		1BB44D612566C7C300206C12 /* subset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB44D602566C7C300206C12 /* subset.cpp */; };
 		1BB44D672566C9BD00206C12 /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB44D652566C9BD00206C12 /* common.cpp */; };
+		1BB5DA7025AC9D1300609769 /* june.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB5DA6F25AC9D1300609769 /* june.cpp */; };
 		1BDA9DE02551A706004DBBB4 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BDA9DDF2551A706004DBBB4 /* main.cpp */; };
 		1BDA9DE92551A87D004DBBB4 /* graph.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BDA9DE82551A87D004DBBB4 /* graph.cpp */; };
 		1BFBED25257603BE00EF2F14 /* leetcode1.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BFBED24257603BE00EF2F14 /* leetcode1.cpp */; };
@@ -32,6 +34,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1B08704825B9DE4C000131AA /* verkada.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = verkada.cpp; sourceTree = "<group>"; };
 		1B5DB99B2553BBC00018BF93 /* google.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = google.cpp; sourceTree = "<group>"; };
 		1B5DB9A3255736F40018BF93 /* linkedlist.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = linkedlist.cpp; sourceTree = "<group>"; };
 		1B5DB9A82559978B0018BF93 /* binarytree.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = binarytree.cpp; sourceTree = "<group>"; };
@@ -40,6 +43,7 @@
 		1BB44D602566C7C300206C12 /* subset.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = subset.cpp; sourceTree = "<group>"; };
 		1BB44D652566C9BD00206C12 /* common.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = common.cpp; sourceTree = "<group>"; };
 		1BB44D662566C9BD00206C12 /* common.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = common.hpp; sourceTree = "<group>"; };
+		1BB5DA6F25AC9D1300609769 /* june.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = june.cpp; sourceTree = "<group>"; };
 		1BDA9DDC2551A706004DBBB4 /* Practice */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Practice; sourceTree = BUILT_PRODUCTS_DIR; };
 		1BDA9DDF2551A706004DBBB4 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		1BDA9DE82551A87D004DBBB4 /* graph.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = graph.cpp; sourceTree = "<group>"; };
@@ -61,6 +65,8 @@
 			isa = PBXGroup;
 			children = (
 				1B5DB99B2553BBC00018BF93 /* google.cpp */,
+				1BB5DA6F25AC9D1300609769 /* june.cpp */,
+				1B08704825B9DE4C000131AA /* verkada.cpp */,
 			);
 			path = Interview;
 			sourceTree = "<group>";
@@ -228,6 +234,8 @@
 				1B5DB9A4255736F40018BF93 /* linkedlist.cpp in Sources */,
 				1BDA9DE02551A706004DBBB4 /* main.cpp in Sources */,
 				1BB44D5C2564248500206C12 /* heap.cpp in Sources */,
+				1BB5DA7025AC9D1300609769 /* june.cpp in Sources */,
+				1B08704925B9DE4C000131AA /* verkada.cpp in Sources */,
 				1BFBED25257603BE00EF2F14 /* leetcode1.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

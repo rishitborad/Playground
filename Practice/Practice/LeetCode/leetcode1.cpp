@@ -9,10 +9,13 @@
 #include <stdio.h>
 #include <vector>
 #include <algorithm>
+#include <numeric>
 #include <queue>
 #include <set>
+#include <map>
 #include <stack>
 #include "common.hpp"
+#include "string"
 
 using namespace std;
 #define MAX(A,B) ((A>B)? (A) : (B))
@@ -557,6 +560,10 @@ int largestRectangleAreaBinarySearch(vector<int>& heights, int start, int end) {
 //https://leetcode.com/problems/largest-rectangle-in-histogram/solution/245709
 //Good problem, worth looking at the stack implementation
 
+// INPUT
+//    vector<int>histeresis = {2,5,5,6,2,3};
+//    printf("Largest Area = %d\r\n", largestRectangleAreaStack(histeresis));
+
 int largestRectangleAreaStack(vector<int>& heights) {
 
     int maxSize = 0;
@@ -602,12 +609,312 @@ int largestRectangleAreaStack(vector<int>& heights) {
     return maxSize;
 }
 
+//======================================================================//
+//Input:
+
+//    string s = "aab";
+//    vector<vector<string>> answer = palindrom_partitions(s);
+//    for(int i = 0; i < answer.size(); i++){
+//        for(int j = 0; j < answer[i].size(); j++)
+//        {
+//            printf("%s ", answer[i][j].c_str());
+//        }
+//        printf("\r\n");
+//    }
+
+bool isPalindrom(string s){
+    int start = 0;
+    int end = (int)s.length()-1;
+    printf("len is %d\r\n", end);
+    if(end < 0)
+        return false;
+    if(end==0){
+        return true;
+    }
+    else{
+        while(start <= end){
+            if(s[start] != s[end])
+                return false;
+            start++;
+            end--;
+        }
+    }
+    return true;
+}
+
+void palindrom_partitions_util(string s, int curr, vector<string>&pal, vector<vector<string>>&ans){
+    int len = (int)s.length();
+    if(curr >= len){
+        ans.push_back(pal);
+    }
+    for(int i = curr; i < len; i++){
+        if(isPalindrom(s.substr(curr,i-curr+1))){
+            pal.push_back(s.substr(curr,i-curr+1));
+            palindrom_partitions_util(s, i+1, pal, ans);
+            pal.pop_back();
+        }
+    }
+}
+
+vector<vector<string>> palindrom_partitions(string s) {
+    vector<vector<string>>ans;
+    vector<string>curr_ans;
+    if(isPalindrom(s)){
+        vector<string>a;
+        a.push_back(s);
+        ans.push_back(a);
+    }
+    palindrom_partitions_util(s, 0, curr_ans, ans);
+    return ans;
+}
 
 //======================================================================//
+//1011. Capacity To Ship Packages Within D Days
+// INPUT:
+//    vector<int>weights = {1,2,3,4,5,6,7,8,9,10};
+//    int shippingDays = 5;
+//    vector<int>weights = {3,2,2,4,1,4};
+//    int shippingDays = 3;
+//    vector<int>weights = {1,2,3,1,1};
+//    int shippingDays = 4;
+//    printf("A truck that could carry %d load in a day is good fit to transport all the packages in %d days\r\n", shipWithinDays(weights, shippingDays), shippingDays);
+
+bool checkDays(vector<int>& weights, int D, int truck_capacity){
+    int currLoad = 0;
+    int days = 0;
+    for(int i = 0; i < (int)weights.size(); i++){
+        currLoad += weights[i];
+        
+        if(currLoad > truck_capacity){
+//            printf("currLoad: %d, truckCap: %d, days %d\r\n", currLoad, truck_capacity, days);
+            days++;
+            currLoad = weights[i];
+            if(days >= D)
+                return false;
+        }
+        else{
+//            printf("currLoad: %d, truckCap: %d, days %d\r\n", currLoad, truck_capacity, days);
+        }
+    }
+    return true;
+}
+
+int converge(vector<int>& weights, int D, int min_cap, int max_cap){
+    printf("Min: %d, Max: %d", min_cap, max_cap);
+    if(min_cap >= max_cap){
+        // IMPORTANT: max_cap"+1" because min_cap is now more than max_cap, max_cap was reduced by 1 before sending here in recursion, so the right answer is previous value of max_cap
+        return max_cap+1;
+    }
+    int mid = min_cap + ((max_cap - min_cap) / 2);
+    printf(" Mid: %d\r\n", mid);
+    int load_capacity = 0;
+    
+    // Check if the truck with 'min_cap' load capacity can carry this load withing 'D' days
+    // if truck can carry that much load, try a truck capacity range lower than the current
+    // else try a truck capacity higher than the current
+    if(checkDays(weights, D, mid)){
+        load_capacity = converge(weights, D, min_cap, mid-1);
+    }else{
+        load_capacity = converge(weights, D, mid+1, max_cap);
+    }
+    return load_capacity;
+}
+
+int shipWithinDays(vector<int>& weights, int D){
+    int totalWeight = std::accumulate(weights.begin(), weights.end(), 0);
+    int maxWeight = 0 ;
+    for(int w : weights){
+        maxWeight = MAX(maxWeight, w);
+    }
+    // maxWeight should be the minimum capacity a truck should carry
+    // maximum a truck should carry is total weight
+    // but we re finding optimum
+    // so use binary search
+    return converge(weights, D, maxWeight, totalWeight);
+}
+
+//======================================================================//
+// INPUT:
+    //ListNode* head = new ListNode(-10);
+    //head->next = new ListNode(-3);
+    //head->next->next = new ListNode(0);
+    //head->next->next->next = new ListNode(5);
+    //head->next->next->next->next = new ListNode(9);
+    //TreeNode* tree_head =sortedListToBST(head);
+    //printLevelOrderBT(tree_head);
+
+struct TreeNode {
+      int val;
+      TreeNode *left;
+      TreeNode *right;
+      TreeNode() : val(0), left(nullptr), right(nullptr) {}
+      TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+      TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+};
+
+struct ListNode {
+      int val;
+      ListNode *next;
+      ListNode() : val(0), next(nullptr) {}
+      ListNode(int x) : val(x), next(nullptr) {}
+      ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+void printLevelOrderBT(TreeNode* head)
+{
+    if(!head)
+        return;
+    
+    queue<TreeNode*> q;
+    q.push(head);
+    while(!q.empty())
+    {
+        TreeNode* frnt = q.front();
+        q.pop();
+        printf("%d ", frnt->val);
+        if(frnt->left != nullptr)
+            q.push(frnt->left);
+        if(frnt->right != nullptr)
+            q.push(frnt->right);
+    }
+}
+
+ListNode* findMiddle(ListNode* head, ListNode* tail){
+    // Send null pointer when head is null as well as when ther is only one node in the list
+    if(head == nullptr || head ->next == nullptr || head == tail){
+        return nullptr;
+    }
+    
+    if(head->next->next == nullptr){
+        return nullptr;
+    }
+    
+    ListNode* curr_slow = head;
+    ListNode* curr_fast = head;
+    printf("%d\r\n",curr_slow->val);
+    while(curr_fast != nullptr && curr_fast->next != nullptr && curr_fast != tail && curr_fast->next != tail){
+        curr_fast = curr_fast->next->next;
+        curr_slow = curr_slow->next;
+    }
+    
+    return curr_slow;
+}
+
+void sortedListToBST_util(TreeNode** root, ListNode* head, ListNode* tail){
+    if(head)
+        printf("head %d",head->val);
+    if(tail)
+        printf("tail %d",tail->val);
+    printf("\r\n");
+    if(head == nullptr){
+        root = nullptr;
+        return;
+    }
+    
+    ListNode* middle = findMiddle(head, tail);
+    
+    if(middle == nullptr){
+        // If it gets here, it means there is only one node or no node in currnt LL
+        // Set that as a root node
+//        *root = new TreeNode(head->val);
+//        printf("MiddleNull: %d\r\n",head->val);
+//        sortedListToBST_util(&(*root)->left, head->next, nullptr);
+    }else{
+        *root = new TreeNode(middle->val);
+        printf("NotNull%d %d\r\n",head->val, middle->val);
+        sortedListToBST_util(&(*root)->left, head, middle);
+        sortedListToBST_util(&(*root)->right, middle->next, nullptr);
+    }
+    
+    return;
+}
+
+TreeNode* sortedListToBST(ListNode* head){
+    TreeNode* root;
+    sortedListToBST_util(&root, head, nullptr);
+    return root;
+}
+
+//======================================================================//
+//1048. Longest String Chain
+//https://leetcode.com/problems/longest-string-chain/discuss/294890/C%2B%2BJavaPython-DP-Solution
+//    Explanation
+//    Sort the words by word's length. (also can apply bucket sort)
+//    For each word, loop on all possible previous word with 1 letter missing.
+//    If we have seen this previous word, update the longest chain for the current word.
+//    Finally return the longest word chain.
+//
+//
+//    Complexity
+//    Time O(NlogN) for sorting,
+//    Time O(NSS) for the for loop, where the second S refers to the string generation and S <= 16.
+//    Space O(NS)
+
+//INPUT
+//    vector<string> words = {"xbc","pcxbcf","xb","cxbc","pcxbc"};
+//    printf("Longest WordChain is %d\r\n", longestStrChain(words));
+
+static bool compare(const string& s1, const string& s2){
+    return s1.length() < s2.length();
+}
+
+int longestStrChain(vector<string>& words)
+{
+    std:sort(words.begin(), words.end(), compare);
+    map<string, int> dp;
+    int res = 0;
+    for(int i = 0 ; i < words.size(); i++){
+        for(int j = 0; j < words[i].length(); j++){
+            dp[words[i]] = MAX(dp[words[i]], dp[words[i].substr(0,j)+words[i].substr(j+1)]+1);
+        }
+        res = MAX(res, dp[words[i]]);
+    }
+    return res;
+}
+
+//======================================================================//
+
+class CountSmaller {
+    typedef vector<pair<int, int>> Pii;
+    typedef Pii::iterator Pit;
+public:
+    vector<int> countSmaller(vector<int>& nums) {
+        int n = (int)nums.size();
+        vector<int> res(n);
+        Pii nums_(n);
+        for(int i = 0; i < n; ++i)
+            nums_[i] = {nums[i], i};
+        printf("nums %d\r\n", nums_.end()->second);
+        merge(nums_.begin(), nums_.end(), res);
+        return res;
+    }
+    
+    void merge(Pit begin, Pit end, vector<int>& res){
+        
+        
+        if(end - begin <= 1)
+            return;
+        auto mid = begin + (end - begin) / 2;
+        merge(begin, mid, res);
+        merge(mid, end, res);
+        for(auto i = begin, j = mid; i != mid; ++i){
+            while(j != end && i->first > j->first)
+                ++j;
+            res[i->second] += j - mid;
+        }
+        inplace_merge(begin, mid, end);
+    }
+};
+
+//======================================================================//
+
 
 // __MAIN__
 void run_leetcode1()
 {
-    vector<int>histeresis = {2,5,5,6,2,3};
-    printf("Largest Area = %d\r\n", largestRectangleAreaStack(histeresis));
+    vector<int>nums = {3,2,1};
+    static CountSmaller c;
+    vector<int> ans = c.countSmaller(nums);
+    common_print_1D_vector(ans);
 }
+
