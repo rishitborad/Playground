@@ -491,7 +491,14 @@ public:
 
 
 //======================================================================//
-
+//input:
+//    vector<Edge>edges = {{0,1},{1,2},{3,1},{2,0},{3,2}};
+//    GraphMatrix g(4);
+//    g.addEdges(edges);
+//    g.printMatrix();
+//    if(g.hasSimplePath(0, 3)){
+//        printf("HasSimplePath\r\n");
+//    }
 class GraphMatrix{
 private:
     int V;
@@ -549,15 +556,278 @@ public:
 };
 
 //======================================================================//
+
+//INPUT:
+//vector<Edge>edges = {{0,1},{1,2},{3,1},{2,0},{3,2}};
+//UD_GraphCycle g(4,edges);
+//if(g.haveCycle_DFS(0)){
+//    printf("has a cycle\r\n");
+//}
+
+struct Node_vp{
+    int idx;
+    int parent;
+};
+
+class UD_GraphCycle{
+private:
+    int V;
+    list<int>* adj;
+public:
+    UD_GraphCycle(){}
+    UD_GraphCycle(int v, vector<Edge>edges):V(v){
+        adj = new list<int>[V];
+        
+        for(int i = 0 ; i < (int)edges.size(); i++){
+            adj[edges[i].src].push_back(edges[i].dest);
+            adj[edges[i].dest].push_back(edges[i].src);
+        }
+    }
+    
+    bool haveCycle_DFS_util(vector<bool>&visited, Node_vp v, vector<Node_vp>&parent){
+        printf("%d %d\r\n",v.idx, v.parent);
+        for(auto i = adj[v.idx].begin(); i != adj[v.idx].end(); i++){
+            if(!visited[*i]){
+                visited[*i] = true;
+                parent[*i] = {*i,v.idx};
+                if(haveCycle_DFS_util(visited, parent[*i], parent)){
+                    return true;
+                }
+            }else if(parent[v.idx].parent != parent[*i].parent){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    bool haveCycle_DFS(int startV){
+        vector<bool>visited(V,false);
+        vector<Node_vp>parent(V,{0,-1});
+        visited[startV] = true;
+        parent[startV] = {startV,-1};
+        return haveCycle_DFS_util(visited, parent[startV], parent);
+    }
+};
+
+//======================================================================//
+//INPUT:
+//    vector<Edge>edges = {{0,1},{1,2},{3,1},{2,0},{3,2},{1,4},{2,4}};
+//    D_GraphCycle g(5,edges);
+//    printf("Total Paths are %d\r\n",g.count_paths_DFS(0,4));
+//    printf("Total Paths are %d\r\n",g.count_paths_BFS(0,4));
+
+class D_GraphCycle{
+private:
+    int V;
+    list<int>* adj;
+public:
+    D_GraphCycle(){}
+    D_GraphCycle(int v, vector<Edge>edges):V(v){
+        adj = new list<int>[V];
+        
+        for(int i = 0 ; i < (int)edges.size(); i++){
+            adj[edges[i].src].push_back(edges[i].dest);
+        }
+    }
+    
+    int haveCycle_DFS_util(vector<bool>&visited, int v, int dest){
+        printf("%d, dest%d\r\n",v,dest);
+        if(v == dest){
+            visited[dest] = false;
+            return 1;
+        }
+        int paths = 0;
+        for(auto i = adj[v].begin(); i != adj[v].end(); i++){
+            if(!visited[*i]){
+                visited[*i] = true;
+                paths+= haveCycle_DFS_util(visited, *i, dest);
+            }
+        }
+        return paths;
+    }
+    
+    int count_paths_DFS(int src, int dest){
+        vector<bool>visited(V,false);
+        visited[src] = true;
+        return haveCycle_DFS_util(visited, src, dest);
+    }
+    
+    int count_paths_BFS_util(vector<bool>&visited, queue<int>q, int dest){
+        int count = 0;
+        while (!q.empty()) {
+            int v = q.front();
+            q.pop();
+            printf("V:%d\r\n",v);
+            if(v == dest){
+                visited[v]=false;
+                count++;
+            }
+            for(auto i = adj[v].begin(); i!= adj[v].end(); i++){
+                if(!visited[*i]){
+                    q.push(*i);
+                }
+            }
+        }
+        return count;
+    }
+    int count_paths_BFS(int src, int dest){
+        vector<bool>visited(V,false);
+        queue<int>q;
+        visited[src] = true;
+        q.push(src);
+        return count_paths_BFS_util(visited, q, dest);
+    }
+};
+//======================================================================//
+//INPUT
+//    vector<Edge>edges = {{0,1},{0,2},{2,1},{1,3},{3,2},{4,2},{3,4},{3,5},{5,4}};
+//    Graph_ShortestPath g(6, edges);
+//    printf("Shortest path is %d\r\n", g.findShortestPath(0, 5));
+struct DP{
+    int distance;
+    int parent;
+};
+
+class Graph_ShortestPath{
+private:
+    int V;
+    list<int>* adj;
+public:
+    Graph_ShortestPath(){}
+    Graph_ShortestPath(int v, vector<Edge>&edges): V(v){
+        adj = new list<int>[V];
+        for(int i = 0 ; i < (int)edges.size(); i++){
+            adj[edges[i].src].push_back(edges[i].dest);
+        }
+    }
+    
+    void DFS(queue<int>&q, vector<DP>& info){
+        while(!q.empty()){
+            int v = q.front();
+            q.pop();
+            for(auto i = adj[v].begin(); i != adj[v].end(); i++){
+                if(info[*i].distance == -1){
+                    q.push(*i);
+                    info[*i].distance = info[v].distance+1;
+                    info[*i].parent = v;
+                }
+            }
+        }
+    }
+    
+    int findShortestPath(int src, int dest){
+        queue<int>q;
+        vector<DP>info(V);
+        for(int i = 0 ; i < V; i++){
+            info[i].distance = -1;
+            info[i].parent = -1;
+        }
+        info[src].distance = 0;
+        q.push(src);
+        DFS(q, info);
+        for(int i = 0 ; i < info.size();i++){
+            printf("%d %d %d\r\n",i,info[i].distance, info[i].parent);
+        }
+        return info[dest].distance;
+    }
+};
+
+//======================================================================//
+struct weightedEdge{
+    int src;
+    int dest;
+    int w;
+};
+
+class Dijkstra{
+private:
+    int V;
+    list<pair<int,int>>* adj;
+public:
+    Dijkstra(){}
+    Dijkstra(int v, vector<weightedEdge>edges):V(v){
+        adj = new list<pair<int, int>>[V];
+        for(int i = 0 ; i < (int)edges.size(); i++){
+            adj[edges[i].src].push_back({edges[i].dest,edges[i].w});
+        }
+    }
+    
+    struct compare{
+        bool operator()(const pair<int, int>& p1, const pair<int, int>& p2){
+            return p1.second < p2.second;
+        }
+    };
+    
+    
+    void BFS(priority_queue<pair<int, int>, vector<pair<int, int>>, compare>&q, vector<DP>&dp){
+        while(!q.empty()){
+            pair<int, int> v = q.top();
+            q.pop();
+            for(auto i = adj[v.first].begin(); i != adj[v.first].end(); i++){
+                int newDist = v.second + i->second;
+                int idx = i->first;
+                if(dp[idx].distance > newDist){
+                    dp[idx].distance = newDist;
+                    dp[idx].parent = v.first;
+                    q.push({idx, newDist});
+                }
+            }
+        }
+    }
+   
+    int shortestPath(int src, int dest){
+        priority_queue<pair<int, int>, vector<pair<int, int>>, compare> q;
+        vector<DP> dp(V,{INT_MAX, -1});
+        dp[src].distance = 0;
+        q.push({src,0});
+        BFS(q,dp);
+        for(int i = 0 ; i < dp.size(); i++){
+            printf("%d %d %d\r\n", i , dp[i].distance, dp[i].parent);
+        }
+        return dp[dest].distance;
+    }
+};
+
+
+//======================================================================//
+
 // __LOCAL_MAIN__
 void run_graph()
 {
-    vector<Edge>edges = {{0,1},{1,2},{3,1},{2,0},{3,2}};
-    GraphMatrix g(4);
-    g.addEdges(edges);
-    g.printMatrix();
-    if(g.hasSimplePath(0, 3)){
-        printf("HasSimplePath\r\n");
-    }
+    vector<weightedEdge>edges = {{0,1,1},{0,2,1},{2,1,1},{1,3,1},{3,2,1},{4,2,1},{3,4,1},{3,5,1},{5,4,1}};
+    Dijkstra g(6, edges);
+    printf("Shortest path is %d\r\n", g.shortestPath(0, 5));
 }
 
+
+
+//Notes:
+//  WeightedGraphs
+//    SingleSource Shortest Paths
+//        Dijkstra's Shortest Path (Non-negative weights)
+//        Bellman ford's shortest Path (Negative weights)
+//        In a DAG, Shortest path using one cycle of Bellman ford
+//    All pairs Shortest Path
+//        Floyd-Warshall's Algorithm
+//            Problem: Transitive Closure of a Graph
+//  Disjoint Sets
+//      krushkal Minspan tree
+
+    
+
+
+//How to find cycle in a undirected graph?
+//    in Nod{V,parent}, check in DFS/BFS, for all the adj V of current U are not discovered. If discovered check its parents. If parent is not U there is a cross-Edge
+
+//How to find cycle in a directed graph?
+//    Keep track of departure times for each node in DFS. Once departure times for all nodes are calculated, check for each node its adj nodes' departure time is <= the node. (u->V) u.departure < v.departure ? there is a cycle : no cycle;
+
+//How to do topological sort?
+//  Count in edges of each node. Put all the nodes with zero in edges to queue. Start DFS on Q. deque a vertex when no inEdges left for that vertex, add it to the sorted list. Otherwise, remove that indge.
+
+// How to do Khan's topological sort?
+//  Count in edges of each node.
+
+// How to find if the graph is bipartite
+//  Change color of the vertex when level changes. If DFS through all the adj vertexes and see if any of adj vertex's color matchs with it self. If Color matchs. graph is not bipartite.
+//    This can also be done using level number. If level number of adj vertexes matchs with current, graph is not bipartite.
