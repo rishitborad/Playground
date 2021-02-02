@@ -733,11 +733,89 @@ public:
 };
 
 //======================================================================//
+//INTPUT
+//vector<weightedEdge>negativeWeightEdges = {{0,1,1},{0,2,1},{1,3,1},{3,2,1},{4,2,1},{3,4,3},{3,5,-5},{5,4,1},{2,1,1}};
+//Bellman g(6, negativeWeightEdges);
+//printf("Shortest path is %d\r\n", g.shortestPath(0, 4));
+
 struct weightedEdge{
     int src;
     int dest;
     int w;
 };
+
+class Bellman{
+private:
+    int V;
+    list<pair<int,int>>* adj;
+public:
+    Bellman(){}
+    Bellman(int v, vector<weightedEdge>edges):V(v){
+        adj = new list<pair<int, int>>[V];
+        for(int i = 0 ; i < (int)edges.size(); i++){
+            adj[edges[i].src].push_back({edges[i].dest,edges[i].w});
+        }
+    }
+    
+    struct compare{
+        bool operator()(const pair<int, int>& p1, const pair<int, int>& p2){
+            return p1.second < p2.second;
+        }
+    };
+    
+    
+    bool BFS(queue<pair<int, int>>&q, vector<DP>&dp, vector<bool>&inQ, vector<int>&counter){
+        while(!q.empty()){
+            pair<int, int> v = q.front();
+            q.pop();
+            inQ[v.first] = false;
+            printf("%d %d %d\r\n",v.first,dp[v.first].distance,dp[v.first].parent);
+            for(auto i = adj[v.first].begin(); i != adj[v.first].end(); i++){
+                int newDist = v.second + i->second;
+                int idx = i->first;
+                if(dp[idx].distance > newDist){
+                    dp[idx].distance = newDist;
+                    dp[idx].parent = v.first;
+                    if(!inQ[idx]){
+                        q.push({idx, newDist});
+                        counter[idx]++;
+                        if(counter[idx] > V){
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+   
+    int shortestPath(int src, int dest){
+        vector<bool>inQ(V,false);
+        vector<int>counter(V,0);
+        queue<pair<int, int>> q;
+        vector<DP> dp(V,{INT_MAX, -1});
+        dp[src].distance = 0;
+        q.push({src,0});
+        inQ[src] = true;
+        counter[src]++;
+        if(!BFS(q,dp,inQ,counter)){
+            printf("Found negative cycle");
+            return dp[dest].distance;
+        }
+        for(int i = 0 ; i < dp.size(); i++){
+            printf("%d %d %d\r\n", i , dp[i].distance, dp[i].parent);
+        }
+        return dp[dest].distance;
+    }
+};
+
+
+//======================================================================//
+// Dijkstra woint work if there is a negative cycle. Bellman ford will take care of negative cycle
+//INPUT
+//vector<weightedEdge>nonNegativeWeightEdges = {{0,1,1},{0,2,1},{1,3,1},{3,2,1},{4,2,1},{3,4,3},{3,5,5},{5,4,1},{2,1,1}};
+//Dijkstra d(6, nonNegativeWeightEdges);
+//printf("Dijkstra path %d\r\n", d.shortestPath(0,4));
 
 class Dijkstra{
 private:
@@ -763,6 +841,7 @@ public:
         while(!q.empty()){
             pair<int, int> v = q.top();
             q.pop();
+            printf("%d %d %d\r\n",v.first,dp[v.first].distance,dp[v.first].parent);
             for(auto i = adj[v.first].begin(); i != adj[v.first].end(); i++){
                 int newDist = v.second + i->second;
                 int idx = i->first;
@@ -788,15 +867,167 @@ public:
     }
 };
 
+//======================================================================//
+//INPUT
+//    chessKnight_SP knight;
+//    printf("shortestPath from 00 tp 77 is %d", knight.shortestPath({0,0}, {7,7}));
+
+typedef pair<int,int> iPair;
+
+struct info{
+    iPair loc;
+    int dist;
+    iPair parent;
+};
+
+class chessKnight_SP{
+private:
+    const int rowMax = 8;
+    const int colMax = 8;
+    const int rowOffset[8] = {2,2,-2,-2,1,1,-1,-1};
+    const int colOffset[8] = {1,-1,1,-1,2,-2,-2,2};
+public:
+    int shortestPath(iPair src, iPair dest){
+        printf("Running ShortestPath");
+        
+        queue<info>q;
+        vector<bool>col(colMax,false);
+        vector<vector<bool>> visited(rowMax, col);
+        
+        visited[src.first][src.second] = true;
+        q.push({{src.first,src.second},0,{-1,-1}});
+        
+        while(!q.empty()){
+            info curr = q.front();
+            q.pop();
+            int x = curr.loc.first;
+            int y = curr.loc.second;
+            printf("%d %d -- >",x,y);
+            if(x == dest.first && y == dest.second){
+                return curr.dist;
+            }
+            for(int i = 0 ; i < 8 ; i++){
+                int nextRow = x + rowOffset[i];
+                int nextCol = y + colOffset[i];
+                printf("%d %d\r\n",nextRow, nextCol);
+                if(0 <= nextRow && nextRow < rowMax && 0 <= nextCol && nextCol < colMax && !visited[nextRow][nextCol]){
+                    visited[nextRow][nextCol] = true;
+                    q.push({{nextRow,nextCol},curr.dist+1,{x,y}});
+                }
+            }
+        }
+        return -1;
+    }
+};
+
+//======================================================================//
+
+class Graph2{
+private:
+    int V;
+    
+public:
+    list<int>*adj;
+    Graph2(){}
+    Graph2(int v, vector<Edge>& edges):V(v){
+        adj = new list<int>[V];
+        for(int i = 0 ; i < edges.size(); i++){
+            adj[edges[i].src].push_back(edges[i].dest);
+            adj[edges[i].dest].push_back(edges[i].src);
+        }
+    }
+};
+
+struct DisjointNode{
+    int parent;
+};
+
+class Disjoint{
+private:
+    vector<DisjointNode>dj;
+    int V;
+public:
+    Disjoint(int v):V(v){dj.resize(V);}
+    
+    void makeSet(int V){
+        for(int i = 0 ; i < V; i++)
+        {
+            dj[i].parent = i;
+        }
+    }
+    int find(int v){
+        if(dj[v].parent == v){
+            return v;
+        }
+        return find(dj[v].parent);
+    }
+    void unionSet(int x, int y){
+        int u = find(x);
+        int v = find(y);
+        if(u == v){
+            return;
+        }
+        else{
+            dj[u].parent = v;
+        }
+    }
+};
+
+bool findCycle(Graph2 &g, int V){
+    Disjoint ds(V);
+    ds.makeSet(V);
+    for(int i = 0 ; i < V; i++){
+        for(auto j = g.adj[i].begin(); j != g.adj[i].end(); j++){
+            int x = ds.find(i);
+            int y = ds.find(*j);
+            if(x==y){
+                return true;
+            }else{
+                ds.unionSet(x,y);
+            }
+        }
+    }
+    return false;
+}
+
+//======================================================================//
+//797. All Paths From Source to Target
+//INPUT
+//    vector<vector<int>>graph = {{4,3,1},{3,2,4},{3},{4},{}};
+//    AllPaths a;
+//    common_print_2D_vector(a.allPathsSourceTarget(graph));
+class AllPaths{
+private:
+    void util(vector<vector<int>>&graph, int v, vector<vector<int>>&paths, vector<int>&currPath){
+        if(v == graph.size()-1){
+            paths.push_back(currPath);
+        }
+        else{
+            for(int i = 0 ; i < graph[v].size(); i++){
+                currPath.push_back(graph[v][i]);
+                util(graph, graph[v][i],paths, currPath);
+                currPath.pop_back();
+            }
+        }
+    }
+public:
+    vector<vector<int>> allPathsSourceTarget(vector<vector<int>>& graph) {
+        vector<vector<int>>paths;
+        vector<int>currPath;
+        currPath.push_back(0);
+        util(graph, 0, paths, currPath);
+        return paths;
+    }
+};
+
+
 
 //======================================================================//
 
 // __LOCAL_MAIN__
 void run_graph()
 {
-    vector<weightedEdge>edges = {{0,1,1},{0,2,1},{2,1,1},{1,3,1},{3,2,1},{4,2,1},{3,4,1},{3,5,1},{5,4,1}};
-    Dijkstra g(6, edges);
-    printf("Shortest path is %d\r\n", g.shortestPath(0, 5));
+    
 }
 
 
@@ -804,8 +1035,8 @@ void run_graph()
 //Notes:
 //  WeightedGraphs
 //    SingleSource Shortest Paths
-//        Dijkstra's Shortest Path (Non-negative weights)
-//        Bellman ford's shortest Path (Negative weights)
+//        Dijkstra's Shortest Path (Works on Graph with Non-negative weights & Acyclic or Cyclic Graphs & both Directed as well as undirected graphs)
+//        Bellman ford's shortest Path (Negative weights & Cyclig Graph)
 //        In a DAG, Shortest path using one cycle of Bellman ford
 //    All pairs Shortest Path
 //        Floyd-Warshall's Algorithm
