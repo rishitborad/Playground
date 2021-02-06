@@ -11,6 +11,7 @@
 #include <stack>
 #include <queue>
 #include <set>
+#include <map>
 #include <unordered_map>
 #include "common.hpp"
 using namespace std;
@@ -1020,7 +1021,220 @@ public:
     }
 };
 
+//======================================================================//
 
+//1557. Minimum Number of Vertices to Reach All Nodes
+class MinNumberOfVertices{
+private:
+    
+public:
+    vector<int> findSmallestSetOfVertices(int n, vector<vector<int>>& edges) {
+        vector<int>ans;
+        vector<int>inEdges(n,0);
+        
+        for(int i = 0 ; i < n; i++){
+            inEdges[edges[i][1]]++;
+        }
+        
+        for(int i = 0 ; i < n; i++){
+            if(inEdges[i]==0){
+                ans.push_back(inEdges[i]);
+            }
+        }
+        
+        return ans;
+    }
+};
+
+//======================================================================//
+//1387. Sort Integers by The Power Value
+//INPUT
+//    SortIntPowerVal pow;
+//    printf("Degree: %d\r\n",pow.getKth(7, 11, 4));
+
+class SortIntPowerVal{
+private:
+    map<int,vector<int>>adj;
+    vector<int>pow;
+    int nextNumber(int x){
+        return ((x%2)==0)?(x/2):((x*3)+1);
+    }
+    int findPower(int i){
+        int curr = i;
+        int degree = 0;
+        queue<int>q;
+        
+        while(adj.find(curr) == adj.end()){
+            int next = nextNumber(curr);
+            adj[curr].push_back(next);
+            curr = next;
+        }
+        printf("For %d,FOUND at %d\r\n",i,curr);
+        q.push(i);
+        while(!q.empty()){
+            int elem = q.front();
+            q.pop();
+            printf("pop = %d", elem);
+            degree++;
+            for(int i = 0; i < adj[elem].size(); i++){
+                q.push(adj[elem][i]);
+                printf("Push = %d\r\n", adj[elem][i]);
+            }
+        }
+        printf("elem %d,degree %d\r\n",i,degree);
+        return degree-1;
+    }
+public:
+    SortIntPowerVal(){}
+    int getKth(int lo, int hi, int k) {
+        adj[1] = {};
+        for(int i = 0; i < (hi-lo)+1; lo++){
+            pow.push_back(findPower(lo+i));
+        }
+        
+        sort(pow.begin(), pow.end());
+        common_print_1D_vector(pow);
+        for(auto i = adj.begin() ; i != adj.end(); i++){
+            printf("%d ", i->first);
+            for(int j = 0 ; j < i->second.size(); j++){
+                printf("%d ", i->second[j]);
+            }
+            printf("\r\n");
+        }
+        return pow[k-1];
+    }
+};
+
+
+
+//======================================================================//
+//684. Redundant Connection
+//INPUT
+//    vector<vector<int>>edges = {{1,2},{2,3},{3,1}};
+//        vector<vector<int>>edges = {{1,2},{2,3},{3,4},{1,4},{1,5}};
+//        RedundantConnection rc;
+//        common_print_1D_vector(rc.findRedundantConnection(edges));
+
+// Note: this problem can be better solved using Disjoint Unit (find cycle)
+
+class RedundantConnection{
+private:
+    map<int,vector<int>>adj;
+    vector<int>vEdges;
+    void createGraph(vector<vector<int>>& edges){
+        for(int i = 0; i < (int)edges.size(); i++){
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);
+        }
+        
+    }
+    void countEdges(){
+        vEdges.resize(adj.size());
+        for(auto i = adj.begin(); i != adj.end(); i++){
+            vEdges[i->first] = (int)i->second.size();
+        }
+    }
+public:
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        vector<int>ans;
+        createGraph(edges);
+        countEdges();
+        for(auto itr = edges.rbegin(); itr != edges.rend() && ans.size() < 2; itr++){
+            if(vEdges[(*itr)[0]] > 1 && ans.size() < 2){
+                if(ans.size() == 0 || ans[0] != (*itr)[0]){
+                    ans.push_back((*itr)[0]);
+                }
+            }
+            if(vEdges[(*itr)[1]] > 1 && ans.size() < 2){
+                if(ans.size() == 0 || ans[0] != (*itr)[1]){
+                    ans.push_back((*itr)[1]);
+                }
+            }
+        }
+        return ans;
+    }
+};
+
+
+
+//======================================================================//
+
+//Note: Below Solution will fail for vector<vector<int>> times = {{2,1,1},{2,3,1},{3,4,3},{3,5,1},{5,4,1}};
+//Use Dijkstra for shortest paths and return the longest path
+//INPUT for longestPath
+//    vector<bool> visited(n+1,false);
+//    return nwDelay.longestPath(k, visited);
+
+// INPUT for shortestPathDijkstra
+//    vector<vector<int>> times = {{2,1,1},{2,3,1},{3,4,3},{3,5,1},{5,4,1}};
+//    printf("NwDealy times %d\r\n",networkDelayTime(times, 5, 2));
+struct compare{
+    bool operator()(const iPair& a, const iPair& b){
+        return a.second < b.second;
+    }
+};
+
+class nwDelayTime{
+private:
+    int V;
+    list<iPair>*adj;
+public:
+    nwDelayTime(){}
+    nwDelayTime(int v, vector<vector<int>>& times):V(v){
+        adj = new list<iPair>[V+1];
+        for (int i = 0; i < times.size(); i++) {
+            adj[times[i][0]].push_back({times[i][1],times[i][2]});
+        }
+    }
+    
+    int longestPath(int start, vector<bool>&visited){
+        visited[start] = true;
+        int currentMax = 0;
+        for(auto i = adj[start].begin(); i != adj[start].end(); i++){
+            if(!visited[i->first]){
+                currentMax = max(currentMax, longestPath(i->first, visited) + i->second);
+            }
+        }
+        return currentMax;
+    }
+    
+    int shortestPathDijkstra(int start, vector<DP>&dp){
+        int maxDist = 0;
+        priority_queue<iPair,vector<iPair>, greater<iPair>> q;
+        q.push({start,0});
+        while(!q.empty()){
+            iPair u = q.top();
+            q.pop();
+            
+            for(auto i = adj[u.first].begin(); i != adj[u.first].end(); i++){
+                int newDist = u.second + i->second;
+                printf("%d %d, %d %d, newD:%d\r\n", u.first, u.second, i->first, i->second,newDist);
+                if(dp[i->first].distance == -1){
+                    dp[i->first].distance = newDist;
+                    dp[i->first].parent = u.first;
+                    q.push({i->first, newDist});
+                }
+                else if (dp[i->first].distance > newDist ){
+                    dp[i->first].distance = newDist;
+                    dp[i->first].parent = u.first;
+                }
+            }
+        }
+        for(int i = 0; i < dp.size(); i++){
+            printf("%d %d\r\n",dp[i].distance, dp[i].parent);
+            maxDist = max(maxDist, dp[i].distance);
+        }
+        return maxDist;
+    }
+};
+
+int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+    nwDelayTime nwDelay(n, times);
+    vector<DP>dp(n+1, {-1,-1});
+    dp[k].distance = 0;
+    return nwDelay.shortestPathDijkstra(k, dp);
+
+}
 
 //======================================================================//
 
