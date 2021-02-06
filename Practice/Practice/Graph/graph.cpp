@@ -1105,8 +1105,6 @@ public:
     }
 };
 
-
-
 //======================================================================//
 //684. Redundant Connection
 //INPUT
@@ -1237,11 +1235,107 @@ int networkDelayTime(vector<vector<int>>& times, int n, int k) {
 }
 
 //======================================================================//
+//841. Keys and Rooms
+//INPUT:
+//    vector<vector<int>> rooms = {{1,3},{3,0,1},{2},{0}};
+//    if(canVisitAllRooms(rooms)){printf("Can visit all rooms\r\n");
+//    }else{printf("Can not visit all rooms\r\n");}
 
+bool canVisitAllRooms(vector<vector<int>>& rooms) {
+    // Create a graph
+    int V = (int)rooms.size();
+    list<int>*adj = new list<int>[V];
+    for(int i = 0; i < V; i++){
+        for(int j = 0; j < (int)rooms[i].size(); j++){
+            adj[i].push_back(rooms[i][j]);
+        }
+    }
+    // Start node traversal using BFS
+    vector<bool>visited(V,false);
+    queue<int>q;
+    q.push(0);
+    visited[0] = true;
+    while(!q.empty()){
+        int u = q.front();
+        q.pop();
+        for(auto i = adj[u].begin(); i != adj[u].end(); i++){
+            if(!visited[*i]){
+                visited[*i] = true;
+                q.push(*i);
+            }
+        }
+    }
+    // Check for unvisited room
+    for(int i = 0; i < V; i++){
+        if(!visited[i]){
+            return false;
+        }
+    }
+    return true;
+}
+
+//======================================================================//
+//1042. Flower Planting With No Adjacent
+//INPUT
+//    vector<vector<int>>garden = {{1,2},{2,3},{3,4},{4,1},{4,2},{1,3}};
+//    common_print_1D_vector(gardenNoAdj(4, garden));
+vector<int> gardenNoAdj(int n, vector<vector<int>>& paths) {
+    vector<int>flowers(n+1,0);
+    list<int>*adj = new list<int>[n+1];
+    for(int i = 0; i < (int)paths.size(); i++){
+        adj[paths[i][0]].push_back(paths[i][1]);
+        adj[paths[i][1]].push_back(paths[i][0]);
+    }
+    queue<int>q;
+    for(int k = 1; k <= n; k++){
+        if(flowers[k]!=0){
+            continue;
+        }
+        q.push(k);
+        flowers[k] = 1;
+        while(!q.empty()){
+            int u = q.front();
+            q.pop();
+            printf("%d\r\n",u);
+            for(auto i = adj[u].begin(); i != adj[u].end(); i++){
+                if(flowers[*i]==0 || flowers[*i]==flowers[u]){
+                    int uFlower = flowers[u];
+                    int vFlower = 0;
+                    switch (uFlower) {
+                        case 1:
+                            vFlower = 2;
+                            break;
+                        case 2:
+                            vFlower = 3;
+                            break;
+                        case 3:
+                            vFlower = 4;
+                            break;
+                        case 4:
+                            vFlower = 1;
+                            break;
+                        default:
+                            break;
+                    }
+                    printf("After break %d %d \r\n", flowers[u], flowers[*i]);
+                    flowers[*i] = vFlower;
+                    q.push(*i);
+                }
+            }
+        }
+    }
+    return flowers;
+}
+//======================================================================//
+//======================================================================//
+//======================================================================//
+//======================================================================//
+//======================================================================//
 // __LOCAL_MAIN__
 void run_graph()
 {
-    
+    vector<vector<int>>garden = {{1,2},{2,3},{3,4},{4,1},{4,2},{1,3}};
+    common_print_1D_vector(gardenNoAdj(4, garden));
 }
 
 
