@@ -13,7 +13,9 @@
 #include <set>
 #include <map>
 #include <unordered_map>
+#include <unordered_set>
 #include "common.hpp"
+
 using namespace std;
 
 //======================================================================//
@@ -1279,6 +1281,8 @@ bool canVisitAllRooms(vector<vector<int>>& rooms) {
 //INPUT
 //    vector<vector<int>>garden = {{1,2},{2,3},{3,4},{4,1},{4,2},{1,3}};
 //    common_print_1D_vector(gardenNoAdj(4, garden));
+//    vector<vector<int>>garden = {{1,2},{2,3},{3,4},{4,1},{4,2},{1,3},{1,5},{4,5}};
+//    common_print_1D_vector(gardenNoAdj(5, garden));
 vector<int> gardenNoAdj(int n, vector<vector<int>>& paths) {
     vector<int>flowers(n+1,0);
     list<int>*adj = new list<int>[n+1];
@@ -1327,17 +1331,249 @@ vector<int> gardenNoAdj(int n, vector<vector<int>>& paths) {
     return flowers;
 }
 //======================================================================//
+//1334. Find the City With the Smallest Number of Neighbors at a Threshold Distance
+//vector<vector<int>>cities = {{0,1,2},{0,4,8},{1,2,3},{1,4,2},{2,3,1},{3,4,1}};
+//cout <<findTheCity(5,cities,2) << endl;
+int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
+    int V = n;
+    list<iPair>*adj = new list<iPair>[V];
+    for(int i = 0; i < (int)edges.size(); i++){
+        adj[edges[i][0]].push_back({edges[i][1],edges[i][2]});
+        adj[edges[i][1]].push_back({edges[i][0],edges[i][2]});
+    }
+    
+    priority_queue<iPair,vector<iPair>,compare>q;
+    vector<vector<int>>cities(V);
+    for(int j = 0; j < V; j++){
+        vector<DP>dp(V,{-1,-1});
+        dp[j].distance=  0;
+        dp[j].parent = -1;
+        q.push({j,0});
+        while(!q.empty()){
+            iPair u = q.top();
+            int uDist = u.second;
+            int uIdx = u.first;
+//            printf("%d %d %d",j,uDist,uIdx);
+            q.pop();
+            printf("\r\nservicing %d\r\n",uIdx);
+            cities[j].push_back(uIdx);
+            for(auto i = adj[u.first].begin(); i != adj[u.first].end(); i++){
+                int newDist = uDist + i->second;
+                printf("NewDist from %d to %d is %d\r\n",uIdx,i->first,newDist);
+                if(newDist <= distanceThreshold && dp[i->first].distance == -1){
+                    dp[i->first].distance = newDist;
+                    dp[i->first].parent = uIdx;
+                    q.push({i->first,newDist});
+                }else if(newDist <= distanceThreshold && dp[i->first].distance > newDist){
+                    printf("not pushed again to %d %d, %d\r\n",uIdx,i->first,i->second);
+                    dp[i->first].distance = newDist;
+                    dp[i->first].parent = uIdx;
+                }
+            }
+        }
+    }
+    int minSize = INT32_MAX;
+    int ans = -1;
+    common_print_2D_vector(cities);
+    for(auto i = 0; i < V; i++){
+        int size = (int)cities[i].size();
+        if(minSize >= size){
+            minSize = size;
+            ans = i;
+        }
+    }
+    return ans;
+}
 //======================================================================//
+//133. Clone Graph
+
+// This solution is not working. Need to find different soln
+//INPUT
+//    Node_c *n1,*n2,*n3,*n4;
+//    n1 = new Node_c(1);
+//    n2 = new Node_c(2);
+//    n3 = new Node_c(3);
+//    n4 = new Node_c(4);
+//    n1->neighbors.push_back(n4);
+//    n1->neighbors.push_back(n2);
+//    n2->neighbors.push_back(n1);
+//    n2->neighbors.push_back(n3);
+//    n3->neighbors.push_back(n4);
+//    n3->neighbors.push_back(n2);
+//    n4->neighbors.push_back(n3);
+//    n4->neighbors.push_back(n1);
+//    printf("%d\r\n",n1->neighbors[0]->val);
+//
+//    printGraph(n1);
+//    printf("Newgraph\r\n");
+//    printGraph(cloneGraph(n1));
+
+class Node_c {
+public:
+    int val;
+    vector<Node_c*> neighbors;
+    Node_c() {
+        val = 0;
+        neighbors = vector<Node_c*>();
+    }
+    Node_c(int _val) {
+        val = _val;
+        neighbors = vector<Node_c*>();
+    }
+    Node_c(int _val, vector<Node_c*> _neighbors) {
+        val = _val;
+        neighbors = _neighbors;
+    }
+};
+
+Node_c* createNode(int val){
+    return new Node_c(val);
+}
+
+typedef pair<Node_c*, Node_c*> nodePair;
+Node_c* cloneGraph(Node_c* node) {
+    unordered_set<int> visited;
+    queue<nodePair>q;
+    visited.emplace(node->val);
+    Node_c* newNode = createNode(node->val);
+    q.push({node,newNode});
+    while(!q.empty()){
+        vector<Node_c*>currNeighbours;
+        nodePair currNode = q.front();
+        q.pop();
+        for(int i = 0; i < currNode.first->neighbors.size(); i++){
+            if(find(visited.begin(), visited.end(), currNode.first->neighbors[i]->val) == visited.end()){
+                Node_c* adjNode = createNode(currNode.first->neighbors[i]->val);
+                currNeighbours.push_back(adjNode);
+                visited.emplace(adjNode->val);
+                q.push({currNode.first->neighbors[i], adjNode});
+            }else{printf("%d %d visited already", currNode.first->val, currNode.first->neighbors[i]->val);}
+        }
+        currNode.second->neighbors = currNeighbours;
+    }
+    return newNode;
+}
+
+void printGraph(Node_c* node){
+    unordered_set<int> visited;
+    queue<Node_c*>q;
+    q.push(node);
+    visited.emplace(node->val);
+    while(!q.empty()){
+        Node_c* u = q.front();
+        q.pop();
+        printf("\r\n%d:",u->val);
+        for(int i = 0; i < u->neighbors.size(); i++){
+            printf("%d,",u->neighbors[i]->val);
+            if(find(visited.begin(), visited.end(), u->neighbors[i]->val) == visited.end()){
+                visited.emplace(u->neighbors[i]->val);
+                q.push(u->neighbors[i]);
+            }
+        }
+    }
+}
 //======================================================================//
+//399. Evaluate Division
+struct DivisionEdge{
+    int idx;
+    double weight;
+};
+
+struct DP_double{
+    double dist;
+    int parent;
+};
+
+class EvalDivision{
+private:
+    int V;
+    map<int,vector<DivisionEdge>> adj;
+public:
+    EvalDivision(){}
+    EvalDivision(vector<vector<string>>& eqn, vector<double>& values):V((int)values.size()+1){
+        for(int i = 0; i < (int)eqn.size(); i++){
+            int src = eqn[i][0][0]-'a';
+            int dest = eqn[i][1][0]-'a';
+            adj[src].push_back({dest,values[i]});
+            adj[dest].push_back({src,1/values[i]});
+        }
+    }
+    double getValue(vector<string>& query){
+        vector<bool>visited(V,false);
+        queue<iPair>q;
+        vector<DP_double>dp(V,{INT_MAX, -1});
+        vector<bool>inQ(V,false);
+        
+//        for(int i = 0; i < dp.size(); i++){
+//            printf("%d %f\r\n", dp[i].parent, dp[i].dist);
+//        }
+        int u = query[0][0]-'a';
+        int dest = query[1][0]-'a';
+        //printf("dest %c, %d", dest, (int)query.size());
+        if(u == dest && adj.find(u)!=adj.end()){
+            return 1;
+        }
+        inQ[u] = true;
+        q.push({u,1});
+        dp[u].dist = 1;
+        dp[u].parent = -1;
+        while(!q.empty()){
+            iPair v = q.front();
+            q.pop();
+            inQ[v.first] = false;
+            //printf("Ele %d dest %d\r\n",v.first,dest);
+            if(adj.find(v.first)==adj.end()){
+//                printf("Here0");
+                return -1.0;
+            }
+            if(v.first == dest){
+//                printf("Here1");
+                return dp[dest].dist;
+            }
+
+            for(int i = 0; i < adj[v.first].size(); i++){
+                DivisionEdge w = adj[v.first][i];
+                
+                double newDist = v.second * w.weight;
+//                printf("from %d to %d new %f curr %f\r\n",v.first, w.idx, newDist, dp[w.idx].dist);
+                if(dp[w.idx].dist > newDist){
+                    dp[w.idx].dist = newDist;
+                    if(!inQ[w.idx]){
+                        q.push({w.idx, newDist});
+                    }
+                }
+            }
+        }
+        
+        return -1.0;
+    }
+};
+
+vector<double> calcEquation(vector<vector<string>>& equations, vector<double>& values, vector<vector<string>>& queries) {
+    int numQueries = (int)queries.size();
+    vector<double>ans;
+    EvalDivision d(equations, values);
+    for(int i = 0 ; i < numQueries; i++){
+        ans.push_back(d.getValue(queries[i]));
+    }
+    
+    return ans;
+}
+
 //======================================================================//
 //======================================================================//
 // __LOCAL_MAIN__
 void run_graph()
 {
-    vector<vector<int>>garden = {{1,2},{2,3},{3,4},{4,1},{4,2},{1,3}};
-    common_print_1D_vector(gardenNoAdj(4, garden));
+    vector<vector<string>> eqn = {{"a","b"},{"b","c"}};
+    vector<double>values = {2.0,3.0};
+    vector<vector<string>>queries = {{"a","c"},{"b","a"},{"a","e"},{"a","a"},{"x","x"}};
+    vector<double>ans = calcEquation(eqn, values, queries);
+    for(int i = 0 ;i < ans.size(); i++){
+        printf("%lf ",ans[i]);
+    }
+    
 }
-
 
 
 //Notes:
