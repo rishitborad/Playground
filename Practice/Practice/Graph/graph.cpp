@@ -1598,7 +1598,7 @@ void run_graph()
 //    Keep track of departure times for each node in DFS. Once departure times for all nodes are calculated, check for each node its adj nodes' departure time is <= the node. (u->V) u.departure < v.departure ? there is a cycle : no cycle;
 
 //How to do topological sort?
-//  Count in edges of each node. Put all the nodes with zero in edges to queue. Start DFS on Q. deque a vertex when no inEdges left for that vertex, add it to the sorted list. Otherwise, remove that indge.
+//  Count in edges of each node. Put all the nodes with zero in edges to queue. Start DFS on Q. deque a vertex when no inEdges left for that vertex, add it to the sorted list. Otherwise, remove that inedge.
 
 // How to do Khan's topological sort?
 //  Count in edges of each node.
