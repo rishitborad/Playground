@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B084EA825DAC189003A0C66 /* embedded.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B084EA725DAC189003A0C66 /* embedded.cpp */; };
 		1B08704925B9DE4C000131AA /* verkada.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B08704825B9DE4C000131AA /* verkada.cpp */; };
 		1B5DB99C2553BBC00018BF93 /* google.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B5DB99B2553BBC00018BF93 /* google.cpp */; };
 		1B5DB9A4255736F40018BF93 /* linkedlist.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B5DB9A3255736F40018BF93 /* linkedlist.cpp */; };
 		1B5DB9A92559978B0018BF93 /* binarytree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B5DB9A82559978B0018BF93 /* binarytree.cpp */; };
 		1B97C87B259671B200A02E71 /* educationIO.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1B97C87A259671B200A02E71 /* educationIO.cpp */; };
+		1BB3958825DDE6C800A9B3DF /* dynamicProgramming.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB3958725DDE6C800A9B3DF /* dynamicProgramming.cpp */; };
+		1BB3958D25DE097900A9B3DF /* greedy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB3958C25DE097900A9B3DF /* greedy.cpp */; };
 		1BB44D5C2564248500206C12 /* heap.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB44D5B2564248500206C12 /* heap.cpp */; };
 		1BB44D612566C7C300206C12 /* subset.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB44D602566C7C300206C12 /* subset.cpp */; };
 		1BB44D672566C9BD00206C12 /* common.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1BB44D652566C9BD00206C12 /* common.cpp */; };
@@ -34,11 +37,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		1B084EA725DAC189003A0C66 /* embedded.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = embedded.cpp; sourceTree = "<group>"; };
 		1B08704825B9DE4C000131AA /* verkada.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = verkada.cpp; sourceTree = "<group>"; };
 		1B5DB99B2553BBC00018BF93 /* google.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = google.cpp; sourceTree = "<group>"; };
 		1B5DB9A3255736F40018BF93 /* linkedlist.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = linkedlist.cpp; sourceTree = "<group>"; };
 		1B5DB9A82559978B0018BF93 /* binarytree.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = binarytree.cpp; sourceTree = "<group>"; };
 		1B97C87A259671B200A02E71 /* educationIO.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = educationIO.cpp; sourceTree = "<group>"; };
+		1BB3958725DDE6C800A9B3DF /* dynamicProgramming.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = dynamicProgramming.cpp; sourceTree = "<group>"; };
+		1BB3958C25DE097900A9B3DF /* greedy.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = greedy.cpp; sourceTree = "<group>"; };
 		1BB44D5B2564248500206C12 /* heap.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = heap.cpp; sourceTree = "<group>"; };
 		1BB44D602566C7C300206C12 /* subset.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = subset.cpp; sourceTree = "<group>"; };
 		1BB44D652566C9BD00206C12 /* common.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = common.cpp; sourceTree = "<group>"; };
@@ -61,6 +67,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1B084EA625DAC16D003A0C66 /* Embedded */ = {
+			isa = PBXGroup;
+			children = (
+				1B084EA725DAC189003A0C66 /* embedded.cpp */,
+			);
+			path = Embedded;
+			sourceTree = "<group>";
+		};
 		1B5DB99A2553BB910018BF93 /* Interview */ = {
 			isa = PBXGroup;
 			children = (
@@ -93,6 +107,22 @@
 				1B97C87A259671B200A02E71 /* educationIO.cpp */,
 			);
 			path = EducativeIO;
+			sourceTree = "<group>";
+		};
+		1BB3958625DDE6A900A9B3DF /* DP */ = {
+			isa = PBXGroup;
+			children = (
+				1BB3958725DDE6C800A9B3DF /* dynamicProgramming.cpp */,
+			);
+			path = DP;
+			sourceTree = "<group>";
+		};
+		1BB3958B25DE096200A9B3DF /* Greedy */ = {
+			isa = PBXGroup;
+			children = (
+				1BB3958C25DE097900A9B3DF /* greedy.cpp */,
+			);
+			path = Greedy;
 			sourceTree = "<group>";
 		};
 		1BB44D592564245300206C12 /* Heap */ = {
@@ -139,6 +169,9 @@
 		1BDA9DDE2551A706004DBBB4 /* Practice */ = {
 			isa = PBXGroup;
 			children = (
+				1BB3958B25DE096200A9B3DF /* Greedy */,
+				1BB3958625DDE6A900A9B3DF /* DP */,
+				1B084EA625DAC16D003A0C66 /* Embedded */,
 				1B97C8792596719400A02E71 /* EducativeIO */,
 				1BFBED232576039E00EF2F14 /* LeetCode */,
 				1BB44D642566C99500206C12 /* Common */,
@@ -225,12 +258,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1BB3958D25DE097900A9B3DF /* greedy.cpp in Sources */,
+				1B084EA825DAC189003A0C66 /* embedded.cpp in Sources */,
 				1B97C87B259671B200A02E71 /* educationIO.cpp in Sources */,
 				1BDA9DE92551A87D004DBBB4 /* graph.cpp in Sources */,
 				1B5DB9A92559978B0018BF93 /* binarytree.cpp in Sources */,
 				1BB44D612566C7C300206C12 /* subset.cpp in Sources */,
 				1B5DB99C2553BBC00018BF93 /* google.cpp in Sources */,
 				1BB44D672566C9BD00206C12 /* common.cpp in Sources */,
+				1BB3958825DDE6C800A9B3DF /* dynamicProgramming.cpp in Sources */,
 				1B5DB9A4255736F40018BF93 /* linkedlist.cpp in Sources */,
 				1BDA9DE02551A706004DBBB4 /* main.cpp in Sources */,
 				1BB44D5C2564248500206C12 /* heap.cpp in Sources */,

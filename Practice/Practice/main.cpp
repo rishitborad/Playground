@@ -16,6 +16,9 @@ extern void run_heap();
 extern void run_subset();
 extern void run_leetcode1();
 extern void run_educativeIO();
+extern void run_embedded();
+extern void run_dp();
+extern void run_greedy();
 
 int main(int argc, const char * argv[]) {
 //    run_graph();
@@ -25,6 +28,9 @@ int main(int argc, const char * argv[]) {
 //    run_heap();
 //    run_subset();
 //    run_leetcode1();
-    run_educativeIO();
+//    run_educativeIO();
+//    run_embedded();
+//    run_dp();
+    run_greedy();
     return 0;
 }
