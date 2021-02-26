@@ -28,9 +28,9 @@ int main(int argc, const char * argv[]) {
 //    run_heap();
 //    run_subset();
 //    run_leetcode1();
-//    run_educativeIO();
+    run_educativeIO();
 //    run_embedded();
 //    run_dp();
-    run_greedy();
+//    run_greedy();
     return 0;
 }

@@ -65,6 +65,45 @@ NODE_p reverseSubList(NODE_p head, int l, int r)
     return head;
 }
 
+//1 --> 2 --> 3 --> 4 --> 5
+// 1 3
+NODE_p reversePartList(NODE_p head, int i, int j){
+    int countr = 0;
+    NODE_p curr = head;
+    NODE_p prev = nullptr;
+    NODE_p next = nullptr;
+    NODE_p lastNodeofsubList = nullptr;
+    NODE_p endOfFL = nullptr;
+    
+    while(countr < i && curr->next != nullptr){
+        countr++;
+        prev = curr;
+        curr = curr->next;
+    }
+    // Prev is last node of previous list
+    // Curr is at last node of curr list
+    countr = 0;
+    endOfFL = prev;
+    lastNodeofsubList = curr;
+    prev = curr;
+    curr = curr->next;
+    prev->next = nullptr;
+    while(curr != nullptr && countr <= j-i){
+        countr++;
+        next = curr->next;
+        curr->next = prev;
+        prev = curr;
+        curr = next;
+    }
+    if(endOfFL != nullptr){
+        endOfFL->next = prev;
+    }else{
+        head = prev;
+    }
+    lastNodeofsubList->next = curr;
+    return  head;
+}
+
 // __ MAIN__
 void run_linkedList()
 {

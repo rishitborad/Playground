@@ -873,6 +873,11 @@ int longestStrChain(vector<string>& words)
 }
 
 //======================================================================//
+//INPUT
+//    vector<int>nums = {3,2,1};
+//    static CountSmaller c;
+//    vector<int> ans = c.countSmaller(nums);
+//    common_print_1D_vector(ans);
 
 class CountSmaller {
     typedef vector<pair<int, int>> Pii;
@@ -908,13 +913,144 @@ public:
 
 //======================================================================//
 
+int solveMathEquation(string eqn){
+    stack<char>stk;
+    stack<char>smallstk;
+    int ans = 0;
+    int i = 0;
+    while(i<(int)eqn.size()){
+        if(eqn[i] == ')' || i == eqn.size()-1){
+            char currC = '\0';
+            while(!stk.empty() && currC != '('){
+                currC = stk.top();
+                stk.pop();
+                smallstk.push(currC);
+            }
+            while(!smallstk.empty()){
+                currC = smallstk.top();
+                smallstk.pop();
+                
+            }
+        }
+        stk.push(eqn[i++]);
+    }
+    
+    return ans;
+}
+
+//======================================================================//
+//Not from leetcode
+// Simplify Math expression involving +,- and parenthesis
+
+#define MAXOPERANDS     10
+#define MAXOPERATORS    (MAXOPERANDS-1)
+
+static char precedence[2] = {'-', '+'};
+
+class expression{
+private:
+    
+public:
+    
+    expression(){}
+    
+    bool isNumber(char c){
+        return ('0' <= c && c <= '9') ? true : false;
+    }
+    bool isOperator(char c){
+        return (c == '+' || c == '-') ? true : false;
+    }
+    int solveExpr(string operand1, string operand2, char operator1){
+        int op1 = atoi(operand1.c_str());
+        int op2 = atoi(operand2.c_str());
+        switch(operator1){
+            case '+':
+                return op1 + op2;
+            case '-':
+                return op1 - op2;
+            default:
+                return 0;
+        }
+    }
+
+    void process(vector<string>&operands, vector<char>&operators){
+        if(operands.size()-operators.size() != 1){
+            return;
+        }
+        for(int i = 0; i < 2; i++){
+            auto itr = find(operators.begin(), operators.end(), precedence[i]);
+            while( itr != operators.end()){
+                int idx = (int)(itr - operators.begin());
+                int res = solveExpr(operands[idx], operands[idx+1], operators[idx]);
+//                cout << res << endl;
+                operands[idx] = to_string(res);
+                operands.erase(operands.begin()+idx+1);
+                operators.erase(operators.begin()+idx);
+                itr = find(operators.begin(), operators.end(), precedence[i]);
+            }
+        }
+    }
+    
+    void fillVectors(string exp, vector<string>&operands, vector<char>&operators){
+        int i = 0;
+        while(i < exp.size()){
+            if(isNumber(exp[i])){
+                string s;
+                while(i < exp.size() && isNumber(exp[i])){
+                    s+=exp[i++];
+                }
+                operands.push_back(s);
+                continue;
+            }
+            if(i < exp.size() && isOperator(exp[i])){
+                operators.push_back(exp[i]);
+                i++;
+                continue;
+            }
+            if(i < exp.size() && exp[i] == '('){
+                int parentheseCount = 1;
+                int start = i++;
+                while(i < exp.size() && parentheseCount != 0){
+                    if(exp[i]== ')')
+                        parentheseCount--;
+                    if(exp[i] == '(')
+                        parentheseCount++;
+                    i++;
+                }
+                if(parentheseCount != 0){
+                    while(1);
+                }
+                operands.push_back(to_string(simplifyExpression(exp.substr(start+1,(i-1)-(start+1)))));
+            }
+        }
+        // Invalid expression
+        if(operands.size() - operators.size() != 1){
+            while(1);
+        }
+    }
+    
+    int simplifyExpression(string exp){
+        cout << exp << endl;
+        vector<string> operands;
+        vector<char> operators;
+        fillVectors(exp,operands,operators);
+//        for(int i = 0; i < operands.size(); i++){
+//            cout << operands[i] << endl;
+//        }
+//        for(int i = 0; i < operators.size(); i++){
+//            cout << operators[i] << endl;
+//        }
+        process(operands, operators);
+        return atoi(operands[0].c_str());
+    }
+};
+
+//======================================================================//
 
 // __MAIN__
 void run_leetcode1()
 {
-    vector<int>nums = {3,2,1};
-    static CountSmaller c;
-    vector<int> ans = c.countSmaller(nums);
-    common_print_1D_vector(ans);
+    expression e;
+    cout << e.simplifyExpression("((5+1)-3)+(1+1)") << endl;
 }
 
